@@ -1,0 +1,16 @@
+mixin navigation
+  nav
+    .container
+      img(src='/images/logo-main.svg' alt='Main logo').nav-logo
+      .nav-menu-toggle Menu
+        .nav-menu-toggle-icon
+          .nav-menu-toggle-icon-bar
+          .nav-menu-toggle-icon-bar
+          .nav-menu-toggle-icon-bar
+      ul.nav-menu(aria-expanded="false")
+        li 
+          a(href="/") Home
+        li 
+          a(href="/about") About
+        li 
+          a(href="/contact") Contact

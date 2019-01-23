@@ -1,0 +1,29 @@
+.button
+
+  font-size 1.4rem
+  line-height 1.5em
+  height 1.25em // Vertically center text
+  outline none
+  border 1px solid $richBlack
+  text-transform uppercase
+  letter-spacing 0.2rem
+  display inline-block
+  color $richBlack
+  padding 1.25rem 1.75rem
+  box-sizing content-box
+  margin 0 2.5rem 2.5rem 0
+
+  &:hover
+    text-decoration none
+    background-color $richBlack
+    color white
+    cursor pointer
+
+  &-primary
+    background-color $primaryColor
+    border-color $primaryColor
+    color white
+
+    &:hover
+      background-color $primaryColorAccent
+      color white

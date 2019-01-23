@@ -1,0 +1,49 @@
+include navigation
+
+doctype html
+html
+  head
+    block title
+      title AMP Boilerplate
+      meta(name="description" content="Site description")
+      
+    meta(http-equiv="Content-Type" content="text/html; charset=utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1")
+    meta(name="theme-color" content="#111111")
+
+    //- Minimal favicon setup, covers most bases. Remember to change /favicon.ico too
+    link(rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png")
+    link(rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png")
+    link(rel="icon" type="image/png" sizes="96x96" href="/images/favicon/favicon-96x96.png")
+    link(rel="apple-touch-icon-precomposed" sizes="152x152" href="/images/favicon/apple-icon-152x152.png")
+    meta(name="msapplication-TileColor" content="#111111")
+    meta(name="msapplication-TileImage" content="/ms-icon-144x144.png")
+
+    //- Preload fonts & other assets that are linked from CSS here (such as background images), rather than wait for the browser to download and parse the CSS and request them. Much faster page loading speed in supported browsers.
+    //- link(rel='preload' href='/fonts/your-font.woff2' as='font' type="font/woff2" crossorigin)
+
+    //- Block for additional preloads that are specific to individual pages
+    block pagePreloads
+
+    //- Inline styles in production (change in gulpfile.js), remove this if CSS is over 40kb
+    if production
+      style
+        include ../../../dist/css/style.css
+    else
+      link(rel='stylesheet' href='/css/style.css' type="text/css")
+ 
+  body
+    block nav
+      +navigation
+
+    block content
+
+    block footer
+      footer
+        block commonScripts
+          script
+            include ../../../dist/js/dollarSelect.js
+            include ../../../dist/js/mobileMenu.js
+
+        //- Extra scripts for individual pages
+        block pageScripts

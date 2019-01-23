@@ -1,0 +1,100 @@
+// Nav offset
+body
+  padding-top 6.5rem
+  
+nav 
+  border-bottom 2px solid $lightGrey
+  z-index 999
+  position fixed
+  top 0
+  width 100%
+
+  .container
+    display flex
+    justify-content space-between
+    align-items center
+    flex-wrap wrap
+    background-color white
+
+  .nav
+
+    &-logo
+      width 12rem
+      max-width 60%
+
+    &-menu
+      display flex
+      align-items center
+      justify-content right
+      
+      &-toggle
+        display none
+        align-items center
+        margin 1.25rem 0
+        padding 1.25rem 1.5rem
+        border 1px solid $richBlack
+        user-select none
+
+        &:hover
+          cursor pointer
+
+        &-icon
+          display flex
+          flex-direction column
+          margin-left 1.5rem
+
+          &-bar
+            height 1px
+            background-color $richBlack
+            width 2rem
+            margin 0.3rem 0
+            transition all .3s
+
+      li
+        a
+          padding 2rem
+          display block
+          color $richBlack
+          user-select none
+
+          &:hover
+            background-color $lightGrey
+            text-decoration none
+
+@media(max-width: $breakpointSmall)
+  nav 
+
+    .nav
+
+      &-menu
+        position absolute
+        flex-direction column
+        width 100vw
+        margin 0 -($containerPadding)
+        top 100%
+        background-color white
+        transform translateY(-100%)
+        z-index -1
+        transition transform .3s
+        will-change transform
+
+        & li a
+          width 100vw
+          text-align center
+
+        &-toggle
+          display flex
+
+    &.active
+
+      .nav-menu
+        transform translateY(0)
+        border-bottom 2px solid $lightGrey
+
+      .nav-menu-toggle-icon-bar
+        &:first-child
+          transform translateY(6px) rotate(45deg)
+        &:nth-child(2)
+          opacity 0
+        &:last-child
+          transform translateY(-6px) rotate(-45deg)

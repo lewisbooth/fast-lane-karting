@@ -1,0 +1,33 @@
+{
+  "name": "mb-living",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lewisbooth/mb-living.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lewisbooth/mb-living/issues"
+  },
+  "homepage": "https://github.com/lewisbooth/mb-living#readme",
+  "dependencies": {
+    "autoprefixer": "^7.2.6",
+    "babel-core": "^6.26.3",
+    "babel-preset-env": "^1.7.0",
+    "browser-sync": "^2.26.3",
+    "cssnano": "^3.10.0",
+    "gulp": "^4.0.0",
+    "gulp-babel": "^7.0.1",
+    "gulp-minify": "^2.1.0",
+    "gulp-plumber": "^1.2.1",
+    "gulp-postcss": "^7.0.1",
+    "gulp-pug": "^3.3.0",
+    "gulp-stylus": "^2.7.0"
+  }
+}
