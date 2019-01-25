@@ -1,7 +1,71 @@
 extends _partials/layout
 
+block pageScripts
+  script(src='/js/libs/instafeed.js')
+  script(src='/js/instagram.js')
+
 block content
-  .container
-    h3 Minimal Responsive Boilerplate
-    a(href="/").button.button-primary Primary button
-    a(href="/").button Fork on Github
+
+  .header-video
+    video(src="/video/header-video.mp4" preload autoplay loop)
+
+  section.black.main-title
+    .container
+      h1.center The midlands' #[span.red premiere] indoor karting experience
+      div
+        a.button.button__primary Book Now
+        a.button.button__grey Price List
+
+  section.grey.category-cards
+    .container
+      .category-cards__card
+        .category-cards__card--image
+          img(src='/images/home-categories/race-packages.jpg' alt='Race Packages')
+        .category-cards__card--text
+          h2 Race Packages
+          .red-highlight
+          p The perfect choice for team building, stag/hen parties and group events! Pit your skill and endurance against each other with our selection of Grand Prix and Endurance race packages. Racing times range from 30 to 150 minutes with food provided on-site.
+          a.button.button__primary View Prices
+      .category-cards__card
+        .category-cards__card--image
+          img(src='/images/home-categories/juniors-and-parties.jpg' alt='Juniors & Parties')
+        .category-cards__card--text
+          h2 Juniors & Parties
+          .red-highlight
+          p Go-karting makes a great birthday party or family event for up to 8 people. Our junior packages include up to one hour of track time per driver, a hot meal and drinks in our private corporate lounge overlooking the track, plus medals and a trophy for the birthday host.
+          a.button.button__primary View Prices
+      .category-cards__card
+        .category-cards__card--image
+          img(src='/images/home-categories/arrive-and-drive.jpg' alt='Arrive & Drive')
+        .category-cards__card--text
+          h2 Arrive & Drive
+          .red-highlight
+          p There's no need to book for small groups - turn up at any time and we'll drive for up to 100 laps! Drivers aged 12 years or older are welcome anytime as long as the track is available. High performance 200cc karts are available for ages 14 and over.
+          a.button.button__primary View Prices
+          
+  section.black.corporate-events
+    .container
+      .corporate-events__left
+        h2 Corporate & Group Events
+        .red-highlight
+      .corporate-events__right
+        p When looking to book your next Event, look no further. Hosting your Corporate or Group Event at Fast Lane Karting will ensure a safe, friendly and exhilarating night with on-site catering and Corporate Lounge.
+        p.bold Run by professional people who care.
+        a.button.button__primary View Prices
+
+  section.dark-grey
+    .container
+      #instafeed.social-feed-instagram
+        .social-feed-instagram-post
+        .social-feed-instagram-post
+        .social-feed-instagram-post
+        .social-feed-instagram-post
+        .social-feed-instagram-post
+        .social-feed-instagram-post
+        
+  section.newsletter
+    .container
+      h4 Sign up to receive the latest news, offers and discounts
+      form(name='newsletter')
+        input(type='email' placeholder='Your email...' required)
+        button.button__primary(type='submit') Sign Up

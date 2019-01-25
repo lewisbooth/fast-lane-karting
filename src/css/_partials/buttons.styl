@@ -1,29 +1,33 @@
-.button
-
+.button, button
   font-size 1.4rem
-  line-height 1.5em
-  height 1.25em // Vertically center text
-  outline none
-  border 1px solid $richBlack
+  line-height 1.2
   text-transform uppercase
-  letter-spacing 0.2rem
+  font-weight 900
   display inline-block
-  color $richBlack
-  padding 1.25rem 1.75rem
+  color richBlack
+  padding 1.25rem 2.25rem
   box-sizing content-box
-  margin 0 2.5rem 2.5rem 0
+  margin 0
+  border-radius 100px
+  border none
 
   &:hover
     text-decoration none
-    background-color $richBlack
     color white
     cursor pointer
 
-  &-primary
-    background-color $primaryColor
-    border-color $primaryColor
+  &__primary
+    background primaryColorGradient
     color white
 
     &:hover
-      background-color $primaryColorAccent
+      background mainGreen
+      color white
+
+  &__grey
+    background midGrey
+    color white
+
+    &:hover
+      background lightGrey
       color white

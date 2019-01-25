@@ -13,7 +13,7 @@ gulp.task("pug", function () {
   return gulp
     .src(["src/pug/**/*.pug", "!src/pug/_partials/**/*.pug"])
     .pipe(plumber())
-    .pipe(pug())
+    .pipe(pug({ locals: { production: false } }))
     .pipe(gulp.dest("dist"))
 })
 
@@ -29,11 +29,7 @@ gulp.task("compile-scripts", function () {
   return gulp
     .src("src/js/**/*.js")
     .pipe(plumber())
-    .pipe(
-      babel({
-        presets: ["env"]
-      })
-    )
+    .pipe(babel({ presets: ["env"] }))
     .pipe(minify())
     .pipe(gulp.dest("dist/js"))
 })
@@ -65,10 +61,9 @@ gulp.task("dev", gulp.series("stylus", "scripts", "pug", function () {
     }
   })
   gulp.watch("src/css/**/*.styl", gulp.series("stylus"))
-  gulp.watch("src/js/**/*.js", gulp.series("scripts"))
+  gulp.watch("src/js/**/*.js", gulp.series("scripts", "pug"))
   gulp.watch("src/pug/**/*.pug", gulp.series("pug"))
-  gulp.watch("dist/**/*.html").on("change", browserSync.reload)
-  gulp.watch("dist/**/*.js", gulp.series("pug"))
+  gulp.watch("dist/**/*.*").on("change", browserSync.reload)
 }))
 
 gulp.task("default", gulp.series("dev"))

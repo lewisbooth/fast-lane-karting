@@ -1,5 +1,5 @@
 const nav = $("nav")
-const navMenuToggle = $(".nav-menu-toggle")
+const navMenuToggle = $(".nav__menu-toggle")
 
 navMenuToggle.addEventListener("click", toggleMenu)
 

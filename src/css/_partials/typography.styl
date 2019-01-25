@@ -5,14 +5,22 @@
 //       url(/fonts/OpenSans-Regular.woff) format("woff")
 
 *
-  font-family 'San Francisco', Helvetica, Arial, sans-serif
+  font-family Arial, Helvetica, sans-serif
+  font-size 10px
+
+span 
+  font-family inherit
+  font-size:  inherit
 
 h1, h2, h3, h4, h5, h6
   font-weight 300
+  margin 0 0 1.25rem 0
+  font-family 'BigNoodleTitling'
+  line-height 1.1
+  letter-spacing 0.1rem
 
 h1
-  font-size 5.6rem
-  line-height 1.8em
+  font-size 4.8rem
 
 h2
   font-size 4.2rem
@@ -30,20 +38,35 @@ h6
   font-size 1.6rem
 
 a
-  color $linkColor
+  color linkColor
 
   &:hover
     text-decoration underline
-    color $linkColorAccent
+    color linkColorAccent
+
+ul, li, a, p
+  margin 0
+  line-height 1.4
+  font-size 1.6rem
 
 p
-  margin 0 0 1.6em 0
-
-
-ul
-  margin 0
-  line-height 1.6em
+  margin 0 0 1.25em 0
 
 .no-break
   white-space nowrap
   font-family inherit
+
+.center
+  text-align center
+
+.bold
+  font-weight bold
+
+.red
+  color primaryColor
+
+.red-highlight
+  background primaryColor
+  height 2px
+  width 33px
+  margin 0 0 1.25rem 0

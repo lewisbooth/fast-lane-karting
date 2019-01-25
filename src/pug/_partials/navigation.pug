@@ -1,16 +1,43 @@
 mixin navigation
-  nav
+
+  nav.nav__primary
+    .container.split
+      img.nav__logo(src='/images/logos/fast-lane-karting-logo.svg' alt='Fast Lane Karting Logo')
+      .nav__right
+        .nav__right--contact
+          h3 01782 250 450
+          .nav__right--contact--opening-hours
+            .nav__right--contact--opening-hours--light
+            span Open every day 10am - 10:30pm
+
+
+        a.button.nav__right--book-now(href='/contact') Book Now
+
+  nav.nav__secondary
     .container
-      img(src='/images/logo-main.svg' alt='Main logo').nav-logo
-      .nav-menu-toggle Menu
-        .nav-menu-toggle-icon
-          .nav-menu-toggle-icon-bar
-          .nav-menu-toggle-icon-bar
-          .nav-menu-toggle-icon-bar
-      ul.nav-menu(aria-expanded="false")
+      ul.nav__menu(aria-expanded="false")
         li 
-          a(href="/") Home
+          a(href="/") Race Packages     
         li 
-          a(href="/about") About
+          a(href="/") Arrive & Drive     
         li 
-          a(href="/contact") Contact
+          a(href="/") Junior Parties      
+        li 
+          a(href="/") Corporate Events   
+        li 
+          a(href="/") Live Timing      
+        li 
+          a(href="/") Race Timings      
+        li 
+          a(href="/") Register      
+        li 
+          a(href="/") Track Layout      
+        li 
+          a(href="/") About Us      
+        li 
+          a(href="/") Contact Us  
+      .nav__menu-toggle Menu
+        .nav__menu-toggle-icon
+          .nav__menu-toggle-icon-bar
+          .nav__menu-toggle-icon-bar
+          .nav__menu-toggle-icon-bar

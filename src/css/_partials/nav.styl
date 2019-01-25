@@ -1,67 +1,128 @@
-// Nav offset
-body
-  padding-top 6.5rem
-  
-nav 
-  border-bottom 2px solid $lightGrey
-  z-index 999
-  position fixed
-  top 0
+ 
+nav, .nav
+  background richBlack
   width 100%
 
   .container
     display flex
     justify-content space-between
-    align-items center
+    align-items stretch
     flex-wrap wrap
-    background-color white
 
-  .nav
+  &__primary .container
+    background url('/images/crossed-flags.png') no-repeat 55% 38%
 
-    &-logo
-      width 12rem
-      max-width 60%
+  &__logo
+    width 28rem
+    height 4.638rem
+    margin 1.2rem 0
 
-    &-menu
+  &__right
+    display flex
+    align-items stretch
+    color white
+
+    &--book-now
+      background primaryColorGradient
+      color white
+      font-size 1.8rem
+      font-weight 900
+      letter-spacing 0rem
+      margin 0
+      padding 0 1.75rem
       display flex
       align-items center
-      justify-content right
-      
-      &-toggle
-        display none
+      height 100%
+      border-radius 0
+
+      &:hover
+        background mainGreen
+
+    &--contact
+      display flex
+      flex-direction column
+      align-items center
+      justify-content center
+      margin-right 3rem
+
+      h3
+        font-family Arial, Helvetica, sans-serif
+        letter-spacing 0
+        font-size 2.7rem
+        font-weight 900
+        margin 0
+
+      &--opening-hours
+        display flex
         align-items center
-        margin 1.25rem 0
-        padding 1.25rem 1.5rem
-        border 1px solid $richBlack
+
+        &--light
+          background #04D600 
+          width 8px
+          height 8px
+          border-radius 100%
+          margin-right .7rem
+
+          &.closing-soon
+            background orange 
+
+          &.closed
+            background red 
+
+        span 
+          font-size 1.3rem
+          font-weight bold
+
+  &__menu
+    display flex
+    align-items center
+    justify-content space-between
+    width calc(100% + 3rem)
+    margin 0 -1.5rem
+    
+    &-toggle
+      display none
+      align-items center
+      margin 1.25rem 0
+      padding 1.25rem 1.5rem
+      border 1px solid richBlack
+      user-select none
+
+      &:hover
+        cursor pointer
+
+      &-icon
+        display flex
+        flex-direction column
+        margin-left 1.5rem
+
+        &-bar
+          height 1px
+          background-color richBlack
+          width 2rem
+          margin 0.3rem 0
+          transition all .3s
+
+    li
+      a
+        font-family 'BigNoodleTitling'
+        font-size 2rem
+        letter-spacing 0.1rem
+        white-space nowrap
+        padding .75rem 1.5rem
+        display block
+        color white
         user-select none
 
         &:hover
-          cursor pointer
+          background-color midGrey
+          text-decoration none
 
-        &-icon
-          display flex
-          flex-direction column
-          margin-left 1.5rem
+  &__secondary
+    background darkGrey
+    border-bottom 2px solid primaryColor
 
-          &-bar
-            height 1px
-            background-color $richBlack
-            width 2rem
-            margin 0.3rem 0
-            transition all .3s
-
-      li
-        a
-          padding 2rem
-          display block
-          color $richBlack
-          user-select none
-
-          &:hover
-            background-color $lightGrey
-            text-decoration none
-
-@media(max-width: $breakpointSmall)
+@media(max-width: breakpointSmall)
   nav 
 
     .nav
@@ -70,7 +131,7 @@ nav
         position absolute
         flex-direction column
         width 100vw
-        margin 0 -($containerPadding)
+        margin 0 -(containerPadding)
         top 100%
         background-color white
         transform translateY(-100%)
@@ -89,7 +150,7 @@ nav
 
       .nav-menu
         transform translateY(0)
-        border-bottom 2px solid $lightGrey
+        border-bottom 2px solid lightGrey
 
       .nav-menu-toggle-icon-bar
         &:first-child
