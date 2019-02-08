@@ -1,27 +1,22 @@
 const videoContainer = $('.header-video')
 const video = $('.header-video video')
 
-videoContainer.addEventListener('click', playPause)
+let playing = false
 
-let playing = !video.paused
+video.oncanplay = () => {
+  if (window.innerWidth >= 768)
+    playPause()
+}
+
+videoContainer.addEventListener('click', playPause)
 
 function playPause() {
   if (playing) {
     video.pause()
+    videoContainer.classList.remove('playing')
   } else {
     video.play()
+    videoContainer.classList.add('playing')
   }
   playing = !playing
-  setClass()
 }
-
-function setClass() {
-  if (playing) {
-    videoContainer.classList.add('playing')
-  } else {
-    videoContainer.classList.remove('playing')
-  }
-}
-
-if (window.innerWidth >= 768)
-  playPause()
