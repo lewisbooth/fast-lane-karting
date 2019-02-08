@@ -45,16 +45,23 @@ nav, .nav
       justify-content center
       margin-right 3rem
 
+      a
+
+        &:focus, &:hover
+          text-decoration none
+
       h3
         font-family Arial, Helvetica, sans-serif
         letter-spacing 0
-        font-size 2.7rem
+        font-size 2.9rem
         font-weight 900
         margin 0
+        color white
 
       &--opening-hours
         display flex
         align-items center
+
 
         &--light
           background #04D600 
@@ -62,12 +69,43 @@ nav, .nav
           height 8px
           border-radius 100%
           margin-right .7rem
+          transition all .5s
+          position relative
+
 
           &.closing-soon
-            background orange 
+            background orange
+
+            span
+              background orange
 
           &.closed
-            background red 
+            background primaryColor 
+
+            span
+              background primaryColor
+
+          span
+            position absolute 
+            z-index 9
+            top 50%
+            right 175%
+            transform translateY(-50%)
+            background #04D600
+            padding .5rem .75rem
+            white-space nowrap
+            font-size 1.4rem
+            border-radius .5rem
+            text-transform uppercase
+            font-weight bold
+            opacity 0
+            transition all .35s ease-in-out
+
+        &:hover
+          cursor pointer
+
+          > div span
+            opacity 1
 
         span 
           font-size 1.3rem
@@ -83,10 +121,11 @@ nav, .nav
     &-toggle
       display none
       align-items center
-      margin 1.25rem 0
-      padding 1.25rem 1.5rem
-      border 1px solid richBlack
+      padding 1.75rem 1rem 1.75rem 1.75rem
       user-select none
+      color white
+      font-size 1.5rem
+      font-weight bold
 
       &:hover
         cursor pointer
@@ -98,15 +137,19 @@ nav, .nav
 
         &-bar
           height 1px
-          background-color richBlack
-          width 2rem
-          margin 0.3rem 0
+          background-color white
+          width 32px
+          margin 0.4rem 0
           transition all .3s
 
     li
+    
+      &.active
+        background midGrey
+
       a
         font-family 'BigNoodleTitling'
-        font-size 2rem
+        font-size 2.2rem
         letter-spacing 0.1rem
         white-space nowrap
         padding .75rem 1.5rem
@@ -122,40 +165,112 @@ nav, .nav
     background darkGrey
     border-bottom 2px solid primaryColor
 
+
+@media(max-width: breakpointMedium)
+
+  .nav
+      
+    &__primary .container
+      background-size 50rem
+
+    &__menu
+      margin 0 -0.75rem
+
+      & li a
+        font-size 1.8rem
+        padding .75rem .75rem
+          
+
 @media(max-width: breakpointSmall)
-  nav 
 
-    .nav
+  .nav
 
-      &-menu
-        position absolute
-        flex-direction column
+    &__primary 
+      z-index 2
+      position relative
+
+      .container
+        background none
+        align-items center
+
+      .nav__right--book-now
+        display none
+
+    &__secondary
+      z-index 1
+      position relative
+      
+      .container
+        position relative
+        z-index 0
+
+    &__logo
+      width 168px
+      height 28px
+      margin 1.2rem 0
+
+    &__right
+      background darkGrey
+      width 100vw
+      margin 0 -1.5rem
+      padding .5rem 1.5rem
+
+      &--contact
+        flex-direction row
+        width 100%
+        margin-right 0
+        justify-content space-between
+
+        h3
+          font-size 18px
+          white-space nowrap
+
+        &--opening-hours
+
+          &--light span
+            display none
+          
+          span 
+            font-size 1.6rem
+
+          &:hover
+            cursor default
+
+    &__menu
+      position absolute
+      flex-direction column
+      width 100vw
+      margin 0 -1.5rem
+      top 100%
+      background-color black
+      transform translateY(-100%)
+      z-index -1
+      transition transform .3s
+      will-change transform
+
+      & li a
         width 100vw
-        margin 0 -(containerPadding)
-        top 100%
-        background-color white
-        transform translateY(-100%)
-        z-index -1
-        transition transform .3s
-        will-change transform
+        text-align center
+        font-size 2.2rem
 
-        & li a
-          width 100vw
-          text-align center
+      &-toggle
+        display flex
 
-        &-toggle
-          display flex
+        &.active .nav__menu-toggle-icon-bar
 
-    &.active
+          &:first-child
+            transform translateY(7.5px) rotate(45deg)
 
-      .nav-menu
+          &:nth-child(2)
+            opacity 0
+            
+          &:last-child
+            transform translateY(-7.5px) rotate(-45deg)
+
+      &.active
         transform translateY(0)
-        border-bottom 2px solid lightGrey
+        border-bottom 2px solid primaryColor
 
-      .nav-menu-toggle-icon-bar
-        &:first-child
-          transform translateY(6px) rotate(45deg)
-        &:nth-child(2)
-          opacity 0
-        &:last-child
-          transform translateY(-6px) rotate(-45deg)
+  .main-title
+    position relative
+    z-index 0

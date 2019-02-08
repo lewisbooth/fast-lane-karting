@@ -1,43 +1,38 @@
-mixin navigation
+mixin navigation(currentPage = '/')
+  -
+    const navLinks = {
+      'Race Packages'     :'/race-packages',
+      'Arrive & Drive'    :'/arrive-and-drive',
+      'Juniors & Parties' :'/juniors-and-parties',
+      'Corporate Events'  :'/corporate-events',
+      'Live Timing'       :'/live-timing',
+      'Race History'      :'/race-history',
+      'Track Layout'      :'/layout',
+      'Contact Us'        :'/contact',
+    }  
 
   nav.nav__primary
     .container.split
-      img.nav__logo(src='/images/logos/fast-lane-karting-logo.svg' alt='Fast Lane Karting Logo')
-      .nav__right
-        .nav__right--contact
-          h3 01782 250 450
-          .nav__right--contact--opening-hours
-            .nav__right--contact--opening-hours--light
-            span Open every day 10am - 10:30pm
-
-
-        a.button.nav__right--book-now(href='/contact') Book Now
-
-  nav.nav__secondary
-    .container
-      ul.nav__menu(aria-expanded="false")
-        li 
-          a(href="/") Race Packages     
-        li 
-          a(href="/") Arrive & Drive     
-        li 
-          a(href="/") Junior Parties      
-        li 
-          a(href="/") Corporate Events   
-        li 
-          a(href="/") Live Timing      
-        li 
-          a(href="/") Race Timings      
-        li 
-          a(href="/") Register      
-        li 
-          a(href="/") Track Layout      
-        li 
-          a(href="/") About Us      
-        li 
-          a(href="/") Contact Us  
+      a(href='/')
+        img.nav__logo(src='/images/logos/fast-lane-karting-logo.svg' alt='Fast Lane Karting Logo')
       .nav__menu-toggle Menu
         .nav__menu-toggle-icon
           .nav__menu-toggle-icon-bar
           .nav__menu-toggle-icon-bar
           .nav__menu-toggle-icon-bar
+      .nav__right
+        .nav__right--contact
+          a(href='tel:01782250450')
+            h3 01782 250 450
+          .nav__right--contact--opening-hours
+            .nav__right--contact--opening-hours--light
+              span Open Now
+            span #[span.hide-mobile Open every day] 10:00am - 10:30pm
+        a.button.nav__right--book-now(href='/contact') Book Now
+
+  nav.nav__secondary
+    .container
+      ul.nav__menu(aria-expanded="false")
+        for url, title in navLinks      
+          li(class=(currentPage == url ? 'active' : ''))
+            a(href=url)= title

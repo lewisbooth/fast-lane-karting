@@ -1,0 +1,15 @@
+extends ../_partials/layout
+
+block nav
+  +navigation('/live-timing')
+
+block title
+  title Live Race Timing | Fast Lane Go Karting Stoke
+
+block description
+  meta(name="description" content="View lap times live on our website. Call 01782 250 450 or email track@fastlanekarting.co.uk to book a karting package. We're open from 10am until 10:30pm, 7 days a week.")
+
+block content
+  section.black
+    .container
+      iframe(src="http://flkstaffordshire.clubspeedtiming.com/cs-speedscreen/#/3" width="100%" height="768" frameborder="0" allowfullscreen="allowfullscreen")

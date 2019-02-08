@@ -8,18 +8,37 @@
 @import '_partials/forms'
 
 .header-video
+  position relative
   width 100%
   height 40rem
   overflow hidden
   display flex
   align-items center
-  background black
+  background midGrey
+
+  &:hover
+    cursor pointer
+
+  &.playing .header-video__controls--play
+    display none
 
   .container
     max-width 1600px
 
   video 
     width 100%
+
+  &__controls
+    position absolute
+    top 50%
+    left 50%
+    transform translateX(-50%) translateY(-50%)
+    width 66px
+    height 66px
+
+    img
+      width 100%
+      height 100%
 
 .main-title
 
@@ -70,7 +89,8 @@
     padding-top 5rem
     padding-bottom 5rem
     display flex
-    align-items flex-start
+    flex-direction column
+    align-items center
     justify-content space-between    
     position relative
     z-index 1
@@ -81,25 +101,18 @@
       top 0 
       left 0
       width 100% 
-      height 100%  
+      height 100% 
       opacity .4 
       z-index -1 
-      background url('/images/crossed-flags.png') no-repeat 100% 38%
-
-
-  &__left
-    max-width 22rem
-    margin-right 7rem
-
-  &__right
-    flex-grow 1
+      background url('/images/crossed-flags.png') no-repeat 50% 50%
 
     p
-      margin 0
       font-size 2rem
+      max-width 84rem
+      margin 2rem 0 0 0
 
     .button
-      margin 2rem 2rem 0 0
+      margin-top 3rem
 
 .social-feed-instagram
   width 100%
@@ -114,6 +127,26 @@
     height auto !important
     background richBlack
     position relative
+    overflow hidden
+
+    img
+      transition all .5s
+      opacity 0
+      position absolute
+      top 0
+      left 50%
+      min-height 100%
+      min-width 100%
+      width auto
+      height 100%
+      transform translateX(-50%) scale(1)
+
+    &.loaded img
+      opacity 1
+
+    &:hover img 
+      transform translateX(-50%) scale(1.2)
+      opacity .75
 
 .newsletter
 
@@ -145,6 +178,12 @@
     padding-right 5rem
     color offWhite
 
+    p
+      margin-bottom 0
+
+    &:last-child
+      padding-right 0
+
     .red-highlight
       margin-bottom 2rem
 
@@ -160,5 +199,351 @@
       text-decoration underline
       display block
 
+      &:hover
+        color primaryColor
+
     &--contact p
       margin-top 2rem
+
+    form
+      display flex
+      flex-direction column
+
+      input, textarea
+        background midGrey
+        color white
+
+      button
+        align-self flex-start
+        border-radius 0
+        margin-top 1rem
+
+  &__social 
+    display flex
+    margin-top 2rem
+    
+    img 
+      width 4rem
+      margin-right 2rem
+
+.amp
+  background richBlack
+  padding 1rem 0
+
+  .container
+    display flex
+    flex-wrap wrap
+    justify-content space-between
+
+    p
+      color white
+
+    a
+      display flex
+      align-items center
+
+    img
+      width 7rem
+      margin-left .75rem
+
+// Standard Google Maps background colour
+// Prevents colour flickering as iframe loads
+.google-maps
+  background #E5E3DF
+
+.contact
+
+  .content-block
+    display flex
+    flex-wrap wrap
+    justify-content space-between
+
+    > div
+      width 48%
+
+      h5
+        font-family sansSerif
+        text-transform uppercase
+        font-weight bold
+        color primaryColor 
+        font-size 1.4rem
+        margin 2rem 0 0 0
+        letter-spacing 0
+
+        & ~ p
+          font-size 2rem
+          margin 0
+
+      ul
+        width 35rem
+
+        li
+          width 100%
+          display flex
+          justify-content space-between
+
+  &__social 
+    display flex
+    margin-top 1rem
+    
+    img 
+      width 4rem
+      margin-right 2rem
+
+.race-packages
+
+  &__description
+    margin 2rem auto 0 auto
+    max-width 50rem
+
+  &__price-list
+    display flex
+    align-items flex-start
+    justify-content space-between
+    margin-top 4rem
+    color richBlack
+
+    .content-block
+      width 47.5%
+
+    &--includes 
+      margin-top .5rem
+      
+      li
+        list-style disc outside
+        margin-left 2rem
+        padding-left 1rem
+        margin-bottom .5rem
+
+    &--packages 
+      
+      li
+        display flex
+        align-items flex-start
+        justify-content space-between
+        margin 2rem 0
+
+        div
+
+          &:nth-child(1)
+            flex-grow 1
+
+            h3
+              font-size 3.2rem
+              margin-bottom 0
+              color red
+
+            p
+              margin 0
+
+          &:nth-child(2)
+            width 14rem
+            margin-left 2rem
+            display flex
+            flex-direction column
+            align-items flex-end
+
+            span
+              font-family 'BigNoodleTitling'
+              font-size 2.4rem
+              line-height 1.2
+
+              &:first-child
+                color red
+
+
+.arrive-and-drive
+
+  &__description
+    margin 4rem auto 2rem auto
+    display flex
+    align-items flex-start
+    justify-content space-between
+
+    div
+      width 47.5%
+    
+    .race-packages__price-list 
+      margin-top 0
+      
+      .content-block
+        width 100%
+
+.race-history
+  margin-top 4rem
+
+.red-strip
+  font-size 3rem
+  font-family 'BigNoodleTitling'
+  background primaryColor 
+  color white
+  display block
+  padding .75rem 3rem
+  margin 0 -3rem
+
+.fastest-lap
+  margin-bottom 2rem
+
+  span
+    display block
+
+    &:first-child
+      font-size 8rem
+      font-family 'BigNoodleTitling'
+      color primaryColor 
+
+    &:last-child
+      font-size 3.2rem
+      font-family 'Arial Black', Arial, Helvetica, sans-serif
+      font-weight bold
+      text-transform uppercase
+      line-height 0.75
+
+
+@media(max-width: breakpointMedium)
+
+  .main-title
+    
+    h1
+      font-size 5rem
+      margin 0 0 2rem 0
+
+  
+  .category-cards
+
+    &__card
+      width 32%
+
+      &--text
+        padding 1.5rem 1.5rem 2rem 1.5rem
+        width 100%
+
+        h2
+          font-size 3.6rem
+  
+  
+  .social-feed-instagram
+    flex-wrap wrap
+
+    &-post
+      width calc(100% / 3 - 5px)
+      margin-top 5px
+      padding-top calc(100% / 3 - 5px)
+
+  .newsletter .container
+    flex-direction column
+
+    h4
+      text-align center
+      margin 0
+
+    form
+      margin-top 2rem
+
+  .footer
+    
+    .container
+      flex-wrap wrap
+
+    &__column
+      width 50%
+      margin-bottom 2rem
+
+  .race-packages
+
+    &__price-list
+      flex-direction column
+      align-items center
+
+      .content-block
+        width 100%
+        max-width 60rem
+        
+  .arrive-and-drive
+
+    &__description
+      margin 4rem auto 2rem auto
+      display flex
+      align-items center
+      justify-content space-between
+      flex-direction column
+
+      div
+        width 100%
+        max-width 60rem
+
+      .content-block
+        margin-top 3rem
+        margin-bottom 2rem
+
+  .track
+
+    .race-packages__price-list
+
+      .split
+        max-width 60rem
+        margin-bottom 4rem
+
+
+@media(max-width: breakpointSmall)
+
+  .header-video
+    height 21rem
+
+  .main-title h1
+    font-size 4rem
+
+  .category-cards 
+
+    .container
+      flex-direction column
+
+    &__card
+      width 100%
+      margin-bottom 2rem
+  
+  .social-feed-instagram
+
+    &-post
+      width calc(100% / 2 - 5px)
+      padding-top calc(100% / 2 - 5px)
+      margin-bottom 1rem
+
+      &:hover img 
+        transform translateX(-50%) scale(1)
+        opacity .75
+
+  .footer
+    
+    .container
+      flex-direction column
+
+    &__column
+      width 100%
+      margin-bottom 4rem
+      padding-right 0
+
+      &:last-child
+        margin-bottom 0
+
+  .race-packages__price-list--packages li
+    flex-direction column
+
+    div:nth-child(2)
+      margin-top .5rem
+      margin-left 0
+      align-items flex-start
+
+  .contact
+
+    .content-block
+      flex-direction column
+
+      > div
+        width 100%
+
+        ul
+          width 100%
+      
+        &:first-child
+          margin-bottom 4rem

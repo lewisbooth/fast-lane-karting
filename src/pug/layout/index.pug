@@ -1,0 +1,32 @@
+extends ../_partials/layout
+
+block nav
+  +navigation('/layout')
+
+block title
+  title Track Layout | Fast Lane Go Karting Stoke
+
+block description
+  meta(name="description" content="The best indoor go karting venue in Stoke-on-Trent for 25 years. High performance 200cc sprint karts, kids karts & biz karts with on-site catering. Arrive & Drive today!")
+
+block content
+  section.grey.track
+    .container
+      h1.center Track Layout
+      .red-highlight.centered
+      .container.race-packages__price-list
+        .content-block
+          h2 The Midlands' Best Karting Track
+          .red-highlight
+          p Experience the exhilarating rush of driving on the Midlands’ best karting circuit! Three intense hairpins will challenge drivers of any skill level and  competition for the outright fastest lap is fierce.
+          p Try our powerful 200cc biz karts for high-octane thrills and competition or our standard 160cc karts for an exciting driving experience.
+          p Our on-site kitchen provides food and drinks throughout the day, and our corporate lounge overlooking the track is perfect for parties looking for a VIP experience.
+          p Think you’ve got what it takes to be the best? Have a go at our fastest lap and claim the top of the leaderboard for yourself!
+
+          .red-strip All-time fastest lap
+          .fastest-lap
+            span 22.835
+            span Evan Pettit
+          
+        .split
+          img(src='/images/track-layout/track-layout.svg')

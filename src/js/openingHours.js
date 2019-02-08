@@ -1,22 +1,21 @@
 const light = $('.nav__right--contact--opening-hours--light')
+const label = $('.nav__right--contact--opening-hours--light span')
+const hour = new Date().getHours()
+const minutes = new Date().getMinutes()
 
-// Change color of the light based on opening hours
-function setLightColor() {
-  const hour = new Date().getHours()
-  const minutes = new Date().getMinutes()
-  light.classList.remove('closed')
-  light.classList.remove('closing-soon')
-  if (hour < 10)
-    light.classList.add('closed')
-  if (hour > 22 || (hour == 22 && minutes > 30))
-    light.classList.add('closed')
-  if (hour == 21 && minutes >= 30)
-    light.classList.add('closing-soon')
-  if (hour == 22 && minutes <= 30)
-    light.classList.add('closing-soon')
+updateLight()
+setTimeout(updateLight, 3600)
+
+function updateLight() {
+  if (hour >= 10 && hour < 22)
+    changeStatus('open-now')
+  else if (hour == 22 && minutes < 30)
+    changeStatus('closing-soon')
+  else
+    changeStatus('closed')
 }
 
-// Update light colour every minute
-setInterval(setLightColor, 60000)
-
-setLightColor()
+function changeStatus(status) {
+  light.classList.add(status)
+  label.textContent = status.replace('-', ' ')
+}

@@ -1,0 +1,50 @@
+extends ../_partials/layout
+
+block nav
+  +navigation('/arrive-and-drive')
+
+block title
+  title  Arrive & Drive | Fast Lane Go Karting Stoke
+
+block description
+  meta(name="description" content="There's no need to book - our Arrive & Drive sessions allow you to hone your skills at any time. Call 01782 250 450 or email track@fastlanekarting.co.uk to book a go karting package. We're open from 10am until 10:30pm, 7 days a week.")
+
+block content
+  section.black.race-packages.arrive-and-drive
+    .container
+      h1.center Arrive & Drive
+      .red-highlight.centered
+      .arrive-and-drive__description
+        div
+          p Arrive and Drive is for you to come and hone your skills in the Practice Lap Sessions. We can run children as low as 8 years old in the mid-week off peak times between 10.00am – 6.00pm, Monday – Friday. For drivers 12 plus you can go on the track at anytime as long as it is available but please book to avoid disappointment.
+          p Time limits do not apply during off-peak times.
+          p We have Junior Karting for 10 – 13 year olds Saturday mornings at 9.00am or during the holiday periods at 10.00am. This is purely for this peer group, so please ring to book.
+          p Standard prices are on the 160cc karts but you can upgrade to the faster 200cc karts for an extra £5 each if you are 14+.
+          p #[span.bold.red PLEASE NOTE:] All drivers require a Balacalava for hygeine reasons. Feel free to bring your own, or we can supply them for £1.50 each.
+        .race-packages__price-list
+          .content-block
+            ul.race-packages__price-list--packages
+              li
+                div
+                  h3 20 lap practice
+                  p 15 Minute Non-Stop Race
+                div
+                  span £15/driver
+              li
+                div
+                  h3 50 lap practice
+                  p 30 Minutes Non-Stop or 2 x 15 Minute Races
+                div
+                  span £25/driver
+              li
+                div
+                  h3 75 lap practice
+                  p 45 Minutes Non-Stop or 3 x 15 Minute Races
+                div
+                  span £30/driver
+              li
+                div
+                  h3 100 lap practice
+                  p 60 Minutes Non-Stop or 4 x 15 Minute Races
+                div
+                  span £35/driver

@@ -1,5 +1,7 @@
 include navigation
+include newsletter
 include footer
+include amp
 
 doctype html
 html
@@ -7,8 +9,10 @@ html
     meta(name="author" content="AMP Studio | https://amp.studio")
 
     block title
-      title Fast Lane Karting Stoke | The Midlands' #1 Indoor Karting Experience
-      meta(name="description" content="The best indoor karting venue in Stoke-on-Trent for 25 years. High performance 200cc sprint karts, kids karts & biz karts with on-site catering. Arrive & Drive today!")
+      title Fast Lane Go Karting Stoke | The Midlands' #1 Indoor Karting Experience
+      
+    block description
+      meta(name="description" content="The best indoor go karting venue in Stoke-on-Trent for 25 years. High performance 200cc sprint karts, kids karts & biz karts with on-site catering. Call 01782 250 450 or email track@fastlanekarting.co.uk to book a go karting package.")
       
     meta(http-equiv="Content-Type" content="text/html; charset=utf-8")
     meta(name="viewport" content="width=device-width, initial-scale=1")
@@ -41,8 +45,12 @@ html
 
     block content
 
+    block newsletter
+      +newsletter
+
     block footer
       +footer
+      +amp
 
     block commonScripts
       script

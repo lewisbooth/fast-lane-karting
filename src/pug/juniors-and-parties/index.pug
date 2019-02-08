@@ -1,0 +1,53 @@
+extends ../_partials/layout
+
+block nav
+  +navigation('/juniors-and-parties')
+
+block title
+  title Junior & Party Packages | Fast Lane Go Karting Stoke
+
+block description
+  meta(name="description" content="Our Kids' Party and Private Sessions offer the an exhilarating day out for all the family. Call 01782 250 450 or email track@fastlanekarting.co.uk to book a karting package. We're open from 10am until 10:30pm, 7 days a week.")
+
+block content
+  section.black.race-packages
+    .container
+      h1.center Juniors & Parties
+      .red-highlight.centered
+      p.center.race-packages__description #[span.bold.red PLEASE NOTE:] All drivers require a Balacalava for hygeine reasons. Feel free to bring your own, or we can supply them for £1.50 each.
+
+    .container.race-packages__price-list
+      .content-block
+        h2 Kids' Birthday Parties
+        .red-highlight
+        p This is a private party package for up to 8 drivers 8 years and older.
+        p.no-margin.bold Kids' Birthday Parties Include:
+        ul.race-packages__price-list--includes
+          li 3 x 15 minutes racing sessions for the birthday boy/girl
+          li 2 x 15 minute sessions for the guests
+          li Hot meal and squash in the private corporate room 
+          li Pizza, chicken nuggets, burger or hot dog with chips
+          li Orange/blackcurrant squash
+          li Medal presentation plus a trophy for the birthday boy/girl
+        ul.race-packages__price-list--packages
+          li
+            div
+              h3 2 Hour Session with Food
+              p 1 Hour Racing, 1 Hour Food & Medals
+            div
+              span £240
+              span up to 8 drivers
+              
+      .content-block
+        h2 1 HOUR RACE / FAMILY SESSION
+        .red-highlight
+        p Our 1 hour non-stop private sessions are perfect for parties and families looking for a great night out. This is a private party package for up to 8 drivers 8 years and older. 
+        p No food, trophies or medals are included but can they be purchased at extra cost.
+        ul.race-packages__price-list--packages
+          li
+            div
+              h3 1 Hour Session
+              p 1 Hour Non-Stop Race
+            div
+              span £240
+              span up to 8 drivers

@@ -1,0 +1,93 @@
+extends ../_partials/layout
+
+block nav
+  +navigation('/race-packages')
+
+block title
+  title  Race Packages | Fast Lane Go Karting Stoke
+
+block description
+  meta(name="description" content="Our Endurance and Grand Prix racing packages are perfect for stag dos, hen parties and team building events. Call 01782 250 450 or email track@fastlanekarting.co.uk to book a karting package. We're open from 10am until 10:30pm, 7 days a week.")
+
+block content
+  section.black.race-packages
+    .container
+      h1.center Race Packages
+      .red-highlight.centered
+      p.center.race-packages__description #[span.bold.red PLEASE NOTE:] All drivers require a Balacalava for hygeine reasons. Feel free to bring your own, or we can supply them for £1.50 each.
+
+    .container.race-packages__price-list
+      .content-block
+        h2 Endurance Events
+        .red-highlight
+        p Endurance racing is a fantastic team building or stag & hen party event. It is a multi lap event which can be run as individuals or teams. These events are run on our 200cc corporate karts. They start with the Dash 30 minute Race going up to the 60 minute Super Challenge race.
+        p.no-margin.bold All Endurance Events Include:
+        ul.race-packages__price-list--includes
+          li Use of the Corporate racewear
+          li 5 Lap practice/qualifying session
+          li Full race report including overall results and individual reports
+          li Trophies for 1st, 2nd and 3rd place 
+          li Bottle of bubbly for the winner
+        ul.race-packages__price-list--packages
+          li
+            div
+              h3 Dash
+              p 30 Minute Non-Stop Race
+            div
+              span £32.50 per driver
+              span 8-10 drivers
+          li
+            div
+              h3 Dash Plus
+              p 40 Minute Non-Stop Race
+            div
+              span £37.50 per driver
+              span 8-10 drivers
+          li
+            div
+              h3 Challenge
+              p 50 Minutes Non-Stop or 2 x 25 Minute Races
+            div
+              span £42.50 per driver
+              span 8-10 drivers
+          li
+            div
+              h3 Super Challenge
+              p 30 Minute Non-Stop Race
+            div
+              span £47.50 per driver
+              span 8-10 drivers
+          li
+            div
+              h3 Double Endurance Races
+              p If you have 16 or more drivers, why not double up any of the above packages? Race in teams of two for double the overall time, at the same cost per driver!
+              
+      .content-block
+        h2 Grand Prix Events
+        .red-highlight
+        p This event is set for medium/large groups intent on a good nights’ racing, and offers the ultimate karting experience. Groups will have exclusive use of the facilities for the duration of the event.
+        p Grand Prix heat stages allow every driver to start one race from each position in the grid.
+        p.no-margin.bold All Grand Prix Events Include:
+        ul.race-packages__price-list--includes
+          li Trophies for 1st, 2nd and 3rd place
+          li Bottle of bubbly for the winner
+        ul.race-packages__price-list--packages
+          li
+            div
+              h3 Grand Prix
+              p 4 Lap Practice Session
+              p 6 x 6 Lap Heats Per Driver
+              p 8 Lap Final Race For Top 8 Drivers
+            div
+              span £37.50 per driver
+              span 13+ drivers
+          li
+            div
+              h3 Super Prix
+              p 4 Lap Practice Session
+              p 6 x 6 Lap Heats Per Driver
+              p 8 Lap Semi Final For All Drivers
+              p 8 Lap Grand Final For Top 16 Drivers
+            div
+              span £42.50 per driver
+              span 13+ drivers

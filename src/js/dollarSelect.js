@@ -1,6 +1,5 @@
-function $(element) {
-  return document.querySelector(element)
-}
-function $$(element) {
-  return document.querySelectorAll(element)
-}
+const $ = element =>
+  document.querySelector(element)
+
+const $$ = element =>
+  document.querySelectorAll(element)

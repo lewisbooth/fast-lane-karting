@@ -22,6 +22,19 @@ section
 
   &.dark-grey
     background darkGrey
+    color white
+
+.content-block  
+  background white
+  border 1px solid primaryColor 
+  padding 3rem 3rem 2rem 3rem
+  margin-bottom 4rem
+
+.red-highlight
+  background primaryColor
+  height 2px
+  width 33px
+  margin 0 0 1.75rem 0
 
 .no-margin
   margin 0 !important
@@ -31,6 +44,7 @@ section
 
 .centered
   margin 0 auto
+  text-align center
 
 .center-content
   display flex
@@ -65,10 +79,12 @@ section
     flex-wrap wrap
 
 @media(max-width: breakpointSmall)
+
   .container
     padding 0 (containerPadding / 2)
 
   .split
     width 100%
 
-  
+  .hide-mobile
+    display none !important

@@ -1,0 +1,1 @@
+"use strict";function initMap(){var e=new google.maps.Map(document.getElementById("map"),{center:{lat:-34.397,lng:150.644},zoom:8});new google.maps.Marker({position:uluru,map:e})}

@@ -1,0 +1,21 @@
+extends ../_partials/layout
+
+block nav
+  +navigation('/race-history')
+
+block title
+  title Leaderboards & Fastest Laps | Fast Lane Go Karting Stoke
+
+block description
+  meta(name="description" content="View the fastest laps of the month and the race history of our registered members. Call 01782 250 450 or email track@fastlanekarting.co.uk to book a karting package. We're open from 10am until 10:30pm, 7 days a week.")
+
+block content
+  section.black
+    .container
+      h1.center Race History
+      .red-highlight.centered
+      p.center.race-packages__description Check your lap times below and enter your race name to find all of your races since June 2017. 
+      p.center.race-packages__description Register using the button below before visiting Fast Lane to keep track of your scores.
+      .center.race-packages__description
+        a(href='https://flkstaffordshire.clubspeedtiming.com/cs-registration/' target='_blank').button.button__primary Register Now
+      iframe.race-history(src="http://flkstaffordshire.clubspeedtiming.com/mobile" width="100%" height="600" frameborder="0" allowfullscreen="allowfullscreen")
