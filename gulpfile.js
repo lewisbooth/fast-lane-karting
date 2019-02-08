@@ -19,7 +19,7 @@ gulp.task("pug", function () {
 
 gulp.task("pug-build", function () {
   return gulp
-    .src("src/pug/*.pug")
+    .src(["src/pug/**/*.pug", "!src/pug/_partials/**/*.pug"])
     .pipe(plumber())
     .pipe(pug({ locals: { production: true } }))
     .pipe(gulp.dest("dist"))
@@ -52,7 +52,7 @@ gulp.task("stylus", function () {
     .pipe(browserSync.stream())
 })
 
-gulp.task("build", gulp.series("stylus", "scripts", "pug-build"))
+gulp.task("build", gulp.series("stylus", "compile-scripts", "pug-build"))
 
 gulp.task("dev", gulp.series("stylus", "scripts", "pug", function () {
   browserSync.init({
