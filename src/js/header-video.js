@@ -5,7 +5,7 @@ let playing = false
 
 video.oncanplay = () => {
   if (window.innerWidth >= 768)
-    playPause()
+    video.play()
 }
 
 videoContainer.addEventListener('click', playPause)
