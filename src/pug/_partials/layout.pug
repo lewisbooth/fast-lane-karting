@@ -40,11 +40,12 @@ html
     else
       link(rel='stylesheet' href='/css/style.css' type="text/css")
  
-  //- Preloads page links when hovered so that they load instantly
-  script
-    include ../../../dist/js/instantPage.js
 
-  body
+  body    
+    //- Preloads page links when hovered so that they load instantly
+    script
+      include ../../../dist/js/instantPage.js
+      
     block nav
       +navigation
 
