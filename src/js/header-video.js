@@ -3,23 +3,21 @@ const video = $('.header-video video')
 
 videoContainer.addEventListener('click', playPause)
 
-let playing = false
-
-video.oncanplay = () => {
-  if (window.innerWidth >= 768) {
-    video.play()
-    videoContainer.classList.add('playing')
-    playing = true
-  }
-}
+// Play video as soon as it's ready
+video.addEventListener('canplay', function () {
+  // Don't autoplay on mobiles
+  if (window.innerWidth < 768)
+    return
+  video.play()
+  videoContainer.classList.add('playing')
+})
 
 function playPause() {
-  if (playing) {
-    video.pause()
-    videoContainer.classList.remove('playing')
-  } else {
+  if (video.paused) {
     video.play()
     videoContainer.classList.add('playing')
+  } else {
+    video.pause()
+    videoContainer.classList.remove('playing')
   }
-  playing = !playing
 }
