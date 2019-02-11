@@ -30,10 +30,6 @@ html
     //- Preload fonts & other assets that are linked from CSS here (such as background images), rather than wait for the browser to download and parse the CSS and request them. Much faster page loading speed in supported browsers.
     link(rel='preload' href='/fonts/BigNoodleTitling.woff2' as='font' type="font/woff2" crossorigin)
   
-    //- Preloads page links when hovered so that they load instantly
-    script
-      include ../../../dist/js/instantPage.js
-
     //- Block for additional preloads that are specific to individual pages
     block pagePreloads
 
@@ -44,6 +40,10 @@ html
     else
       link(rel='stylesheet' href='/css/style.css' type="text/css")
  
+  //- Preloads page links when hovered so that they load instantly
+  script
+    include ../../../dist/js/instantPage.js
+
   body
     block nav
       +navigation
