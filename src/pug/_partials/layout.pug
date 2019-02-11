@@ -29,6 +29,10 @@ html
 
     //- Preload fonts & other assets that are linked from CSS here (such as background images), rather than wait for the browser to download and parse the CSS and request them. Much faster page loading speed in supported browsers.
     link(rel='preload' href='/fonts/BigNoodleTitling.woff2' as='font' type="font/woff2" crossorigin)
+  
+    //- Preloads page links when hovered so that they load instantly
+    script
+      include ../../../dist/js/instantPage.js
 
     //- Block for additional preloads that are specific to individual pages
     block pagePreloads
@@ -46,18 +50,14 @@ html
 
     block content
 
-    block newsletter
-      +newsletter
+    +newsletter
+    +footer
+    +amp
 
-    block footer
-      +footer
-      +amp
-
-    block commonScripts
-      script
-        include ../../../dist/js/dollarSelect.js
-        include ../../../dist/js/mobileMenu.js
-        include ../../../dist/js/openingHours.js
+    script
+      include ../../../dist/js/dollarSelect.js
+      include ../../../dist/js/mobileMenu.js
+      include ../../../dist/js/openingHours.js
 
     //- Extra scripts for individual pages
     block pageScripts
