@@ -1,13 +1,15 @@
 const videoContainer = $('.header-video')
 const video = $('.header-video video')
 
+videoContainer.addEventListener('click', playPause)
 
 let playing = false
 
 video.oncanplay = () => {
   if (window.innerWidth >= 768) {
     video.play()
-    videoContainer.addEventListener('click', playPause)
+    videoContainer.classList.add('playing')
+    playing = true
   }
 }
 
