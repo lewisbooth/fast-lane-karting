@@ -1,5 +1,5 @@
 {
-  "name": "mb-living",
+  "name": "fast-lane-karting",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -8,14 +8,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/lewisbooth/mb-living.git"
+    "url": "git+https://github.com/lewisbooth/fast-lane-karting.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/lewisbooth/mb-living/issues"
+    "url": "https://github.com/lewisbooth/fast-lane-karting/issues"
   },
-  "homepage": "https://github.com/lewisbooth/mb-living#readme",
+  "homepage": "https://github.com/lewisbooth/fast-lane-karting#readme",
   "dependencies": {
     "autoprefixer": "^7.2.6",
     "babel-core": "^6.26.3",

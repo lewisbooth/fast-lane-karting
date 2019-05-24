@@ -1,15 +1,14 @@
-const videoContainer = $('.header-video')
 const video = $('.header-video video')
+const videoContainer = $('.header-video')
 
 videoContainer.addEventListener('click', playPause)
 
 // Play video as soon as it's ready
 video.addEventListener('canplay', function () {
-  // Don't autoplay on mobiles
-  if (window.innerWidth < 768)
-    return
-  video.play()
-  videoContainer.classList.add('playing')
+  if (window.innerWidth >= 768) {
+    video.play()
+    videoContainer.classList.add('playing')
+  }
 })
 
 function playPause() {

@@ -57,7 +57,11 @@ gulp.task("build", gulp.series("stylus", "compile-scripts", "pug-build"))
 gulp.task("dev", gulp.series("stylus", "scripts", "pug", function () {
   browserSync.init({
     server: {
-      baseDir: "./dist"
+      baseDir: "./dist",
+      middleware: function (req, res, next) {
+        res.setHeader('Access-Control-Allow-Origin', '*')
+        next()
+      }
     }
   })
   gulp.watch("src/css/**/*.styl", gulp.series("stylus"))
