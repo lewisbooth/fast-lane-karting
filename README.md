@@ -1,5 +1,5 @@
-# AMP Responsive Boilerplate
-A super-minimal static site generator with an efficient workflow.
+# Fast Lane Karting
+A static site generator for https://fastlanekarting.co.uk, built using [AMP Responsive Boilerplate](https://github.com/lewisbooth/amp-responsive-boilerplate)
 
 ### Gulp
 [Gulp](https://gulpjs.com/) is the core of the boilerplate. It automatically compiles the website and assets into the /dist folder.
