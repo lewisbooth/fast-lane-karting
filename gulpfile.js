@@ -13,7 +13,7 @@ gulp.task("pug", function () {
   return gulp
     .src(["src/pug/**/*.pug", "!src/pug/_partials/**/*.pug"])
     .pipe(plumber())
-    .pipe(pug({ locals: { production: false } }))
+    .pipe(pug({ locals: { production: true } }))
     .pipe(gulp.dest("dist"))
 })
 
