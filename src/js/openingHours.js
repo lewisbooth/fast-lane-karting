@@ -21,7 +21,6 @@ function updateLight() {
 }
 
 function changeStatus(status) {
-  console.log(status)
   light.classList.add(status)
   label.textContent = status.replace('-', ' ')
-}
+} 
