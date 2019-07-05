@@ -1,9 +1,9 @@
 const instafeed = $("#instafeed").getBoundingClientRect()
 const placeholders = $$(".social-feed-instagram-post")
 
-// Trigger when viewport gets within OFFSET pixels of Instafeed
-const OFFSET = 500
-const SETTINGS = {
+// Trigger when viewport gets within x pixels of Instafeed
+const offset = 500
+const settings = {
   get: "user",
   userId: "9364333745",
   clientId: "156a89869a864d659d801edacca1e88e",
@@ -24,8 +24,8 @@ let triggered = false
 function loadImages() {
   if (triggered) return
   // Configure Instafeed library
-  const feed = new Instafeed(SETTINGS)
-  if (window.pageYOffset > instafeed.top - window.innerHeight - OFFSET) {
+  const feed = new Instafeed(settings)
+  if (window.pageYOffset > instafeed.top - window.innerHeight - offset) {
     // Load images if viewport is close to the feed
     feed.run()
     triggered = true
