@@ -20,6 +20,9 @@ function submitNewsletterForm(e) {
       'x-api-key': API_KEY
     }
   })
-    .then(res => console.log(res))
-    .catch(err => console.log(err.response))
+    .then(res => window.location = '/success')
+    .catch(err => {
+      console.log(err.response)
+      window.location = '/error'
+    })
 }
