@@ -12,7 +12,16 @@ block content
   .header-video
     video(src="/video/fast-lane-karting-header.mp4" poster="/video/fast-lane-karting-header-poster.jpg" preload loop muted playsinline)
     .header-video__controls
-      img.header-video__controls--play(src='/images/video-controls/play.svg' alt='Play Button')
+      .container
+        .header-video__controls--play-pause
+          img(id='play' src='/images/video-controls/play.svg' alt='Play Button')
+          img(id='pause' src='/images/video-controls/pause.svg' alt='Pause Button')
+        .header-video__controls--right
+          .header-video__controls--right--audio
+            img(id='muted' src='/images/video-controls/muted.svg' alt='Unmute Button')
+            img(id='unmuted' src='/images/video-controls/unmuted.svg' alt='Mute Button')
+          .header-video__controls--right--fullscreen
+            img(id='fullscreen' src='/images/video-controls/fullscreen.svg' alt='Fullscreen Button')
 
   section.black.main-title
     .container

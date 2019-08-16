@@ -2,6 +2,7 @@ const light = $('.nav__right--contact--opening-hours--light')
 const label = $('.nav__right--contact--opening-hours--light span')
 
 updateLight()
+
 setTimeout(updateLight, 5000)
 
 function updateLight() {

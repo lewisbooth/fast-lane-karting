@@ -15,6 +15,7 @@
   display flex
   align-items center
   background midGrey
+  user-select none
 
   &::-webkit-media-controls-panel 
       display none!important
@@ -28,30 +29,97 @@
     display none!important
     -webkit-appearance none
 
-  &:hover
-    cursor pointer
-
-  &.playing .header-video__controls--play
-    display none
-
-  .container
-    max-width 1600px
-
   video 
     width 100%
 
   &__controls
+    width 100%
     position absolute
-    top 50%
-    left 50%
-    width 66px
-    height 66px
-    transform translateX(-50%) translateY(-50%)
+    bottom 0
+    background rgba(0,0,0,.75)
+    transform translateY(100%)
+    transition transform .35s ease-in-out
 
-    img
-      width 100%
+    .container
       height 100%
+      display flex
+      align-content stretch
+      justify-content flex-end
 
+    &--play-pause      
+      position relative
+      opacity .5
+      padding .5rem
+      transition opacity 0.15s
+
+      &:hover
+        opacity 1
+
+      img
+        width 3rem
+        height 3rem
+
+        &:last-child
+          position absolute
+          top .5rem
+          left .5rem
+
+    &--right
+      display flex
+      align-items center
+
+      > div
+        opacity .5
+        padding .5rem
+        margin-left 1rem
+        position relative
+
+        &:hover
+          opacity 1
+        
+        img
+          width 3rem
+          height 3rem
+
+          &:nth-child(2)
+            position absolute
+            top .5rem
+            left .5rem
+
+  #play
+    opacity 1
+  
+  #pause
+    opacity 0
+
+  &.playing
+
+    #play
+      opacity 0
+    
+    #pause
+      opacity 1
+
+  #muted
+    opacity 1
+  
+  #unmuted
+    opacity 0
+
+  &.unmuted
+
+    #muted
+      opacity 0
+    
+    #unmuted
+      opacity 1
+
+  &:hover
+    cursor pointer
+
+    .header-video__controls
+      transform translateY(0)      
+      
 .main-title
 
   .container
@@ -427,6 +495,8 @@
       font-size 5rem
       margin 0 0 2rem 0
 
+  .header-video__controls
+      transform translateY(0)
   
   .category-cards
 
@@ -510,6 +580,14 @@
 
   .header-video
     height 21rem
+
+    &__controls
+
+      &--play-pause      
+        opacity 1
+
+      &--right > div
+        opacity 1
 
   .main-title h1
     font-size 4rem

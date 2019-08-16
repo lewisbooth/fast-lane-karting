@@ -7,7 +7,10 @@ doctype html
 html
   head
     meta(name="author" content="AMP Studio | https://amp.studio")
-    meta(http-equiv="Content-Security-Policy" content="upgrade-insecure-requests")
+
+    //- Force insecure <iframe> requests to upgrade to https://
+    if production
+      meta(http-equiv="Content-Security-Policy" content="upgrade-insecure-requests")
 
     block title
       title Fast Lane Go Karting Stoke | The Midlands' #1 Indoor Karting Experience
@@ -33,7 +36,7 @@ html
     //- Block for additional preloads that are specific to individual pages
     block pagePreloads
 
-    //- Inline styles in production (change in gulpfile.js), remove this if CSS is over 40kb
+    //- Inline styles in production using `$ gulp build`, remove this if CSS is over 40kb
     if production
       style
         include ../../../dist/css/style.css
@@ -41,7 +44,7 @@ html
       link(rel='stylesheet' href='/css/style.css' type="text/css")
  
   body    
-    //- Preloads page links when hovered so that they load instantly
+    //- Preloads page hyperlinks when hovered over so that they load instantly
     script
       include ../../../dist/js/instantPage.js
       
