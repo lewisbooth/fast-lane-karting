@@ -24,7 +24,6 @@
     "cssnano": "^3.10.0",
     "gulp": "^4.0.0",
     "gulp-babel": "^7.0.1",
-    "gulp-minify": "^2.1.0",
     "gulp-plumber": "^1.2.1",
     "gulp-postcss": "^7.0.1",
     "gulp-pug": "^3.3.0",
