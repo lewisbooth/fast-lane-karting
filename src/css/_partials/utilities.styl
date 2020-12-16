@@ -65,13 +65,13 @@ section
     align-items center
 
 .split
-  width calc(50% - containerPadding)
+  width 50%
 
   &-3
-    width calc(33.333% - containerPadding)
+    width 33.333%
 
   &-4
-    width calc(25% - containerPadding)
+    width 25%
 
   &-container
     display flex
@@ -81,7 +81,7 @@ section
 @media(max-width: breakpointSmall)
 
   .container
-    padding 0 (containerPadding / 2)
+    padding 0 (3rem / 2)
 
   .split
     width 100%
