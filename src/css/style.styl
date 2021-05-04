@@ -38,6 +38,17 @@
   background midGrey
   user-select none
 
+  &__refurb
+    background-color darkGrey
+    display block
+    color white
+    text-align center
+
+    a
+      padding 1rem
+      display inline-block
+      color white
+
   &::-webkit-media-controls-panel 
     display none!important
     -webkit-appearance none 
@@ -408,11 +419,20 @@
     display flex
     align-items flex-start
     justify-content space-between
+    flex-wrap wrap
     margin-top 4rem
     color richBlack
 
     .content-block
-      width 47.5%
+      width calc(50% -3rem)
+
+      &:nth-child(3)
+        margin auto
+
+    &.full-width
+
+      .content-block
+        width 100%
 
     &--includes 
       margin-top .5rem
@@ -493,7 +513,15 @@
 .track
   
   &__image
-    max-width 45%
+    max-width calc(50% - 2rem)
+    margin-bottom 6rem
+
+  &__matterport
+    margin-bottom 6rem  
+
+  &__onboard
+    margin-bottom 6rem
+    width 100%
 
 .fastest-lap
   margin-bottom 2rem
