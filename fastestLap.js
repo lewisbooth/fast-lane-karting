@@ -1,9 +1,9 @@
 // Takes the fastest lap out of a Google Spreadsheet
 // and dumps the result into /dist
-require('dotenv').config()
 const fs = require('fs')
 const path = require('path')
 const { GoogleSpreadsheet } = require('google-spreadsheet')
+require('dotenv').config({ path: path.join(__dirname, '.env') })
 
 if (!process.env.SHEET_ID || !process.env.API_KEY)
     return console.error('Please supply SHEET_ID and API_KEY in .env file')
