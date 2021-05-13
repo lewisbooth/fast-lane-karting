@@ -6,7 +6,8 @@ mixin navigation(currentPage = '/')
       'Juniors & Parties' :'/juniors-and-parties',
       'Corporate Events'  :'/corporate-events',
       'Live Timing'       :'/live-timing',
-      'Race History'      :'/race-history',
+      //- 'Race History'  :'/race-history',
+      'Register'          :'https://fastlane.reg.volarehq.com/',
       'Track Layout'      :'/layout',
       'Contact Us'        :'/contact',
     }  
@@ -33,6 +34,7 @@ mixin navigation(currentPage = '/')
   nav.nav__secondary
     .container
       ul.nav__menu(aria-expanded="false")
-        for url, title in navLinks      
+        for url, title in navLinks
+          - const target = title === 'Register' ? '_blank' : '' 
           li(class=(currentPage == url ? 'active' : ''))
-            a(href=url)= title
+            a(href=url target=(target))= title
