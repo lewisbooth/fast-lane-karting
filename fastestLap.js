@@ -21,6 +21,5 @@ const doc = new GoogleSpreadsheet(process.env.SHEET_ID);
         name: sheet.getCell(1,1).value,
         lapTime: sheet.getCell(1,0).value
     }
-    console.log(data)
     fs.writeFileSync(outputFile, JSON.stringify(data))
 }())
