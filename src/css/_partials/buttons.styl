@@ -6,11 +6,13 @@
   display inline-block
   color richBlack
   padding 1.25rem 2.25rem
-  box-sizing content-box
+  box-sizing border-box
   margin 0
-  border none
+  border 1px solid inside primaryColor
   border-radius 5px
   overflow hidden
+  max-width 100%
+  text-align center
 
   &:hover
     text-decoration none
@@ -22,12 +24,14 @@
     color white
 
     &:hover
-      background mainGreen
+      background primaryColor
       color white
+      border 1px solid inside primaryColorAccent
 
   &__grey
     background midGrey
     color white
+    border-color lightGrey
 
     &:hover
       background lightGrey

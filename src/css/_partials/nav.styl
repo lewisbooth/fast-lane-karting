@@ -2,6 +2,9 @@
 nav, .nav
   background richBlack
   width 100%
+  position fixed
+  top 0
+  z-index 2
 
   .container
     display flex
@@ -30,8 +33,10 @@ nav, .nav
         color white
         margin 1rem 0
 
-  &__primary .container
-    background url('/images/crossed-flags.png') no-repeat 55% 38%
+  &__primary     
+
+    .container
+      background url('/images/crossed-flags.png') no-repeat 55% 38%
 
   &__logo
     width 28rem
@@ -55,9 +60,10 @@ nav, .nav
       align-items center
       height 100%
       border-radius 0
+      border none
 
       &:hover
-        background mainGreen
+        background primaryColor
 
     &--contact
       display flex
@@ -185,6 +191,7 @@ nav, .nav
   &__secondary
     background darkGrey
     border-bottom 2px solid primaryColor
+    top 7rem
 
 
 @media(max-width: breakpointMedium)
@@ -204,11 +211,13 @@ nav, .nav
 
 @media(max-width: breakpointSmall)
 
+  body
+    margin-top 10rem !important
+
   .nav
 
     &__primary 
       z-index 2
-      position relative
 
       .container
         background none
@@ -219,7 +228,7 @@ nav, .nav
 
     &__secondary
       z-index 1
-      position relative
+      top 9.8rem
       
       .container
         position relative
@@ -259,11 +268,11 @@ nav, .nav
 
     &__menu
       position absolute
+      background-color black
       flex-direction column
       width 100vw
       margin 0 -1.5rem
       top 100%
-      background-color black
       transform translateY(-100%)
       z-index -1
       transition transform .3s
@@ -273,6 +282,7 @@ nav, .nav
         width 100vw
         text-align center
         font-size 2.2rem
+        padding 1.5rem 0
 
       &-toggle
         display flex
@@ -289,7 +299,7 @@ nav, .nav
             transform translateY(-7.5px) rotate(-45deg)
 
       &.active
-        transform translateY(0)
+        transform translateY(-1px)
         border-bottom 2px solid primaryColor
 
   .main-title
