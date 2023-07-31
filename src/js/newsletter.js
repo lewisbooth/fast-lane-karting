@@ -9,16 +9,16 @@ const API_ENDPOINT = 'https://74386ydfki.execute-api.eu-west-1.amazonaws.com/pro
 
 newsletterForm.addEventListener('submit', submitNewsletterForm)
 
+
 function submitNewsletterForm(e) {
   e.preventDefault()
   const data = JSON.stringify({ email: emailInput.value })
-  axios({
-    url: API_ENDPOINT,
-    data,
+  fetch(API_ENDPOINT, {
     method: 'POST',
     headers: {
       'x-api-key': API_KEY
-    }
+    },
+    body: data
   })
     .then(res => window.location = '/success')
     .catch(err => {
