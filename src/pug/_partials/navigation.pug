@@ -1,7 +1,8 @@
 mixin navigation(currentPage = '/')
   -
     const navLinks = {
-      "January Blues Offers"   :'/offers',
+      "Offers"              :'/offers',
+      "Vouchers"            :'https://fastlane.bookmykarting.co.uk/book/385/voucher.aspx',
       'Race Packages'       :'/race-packages',
       'Arrive & Drive'      :'/arrive-and-drive',
       'Juniors & Parties'   :'/juniors-and-parties',
@@ -36,6 +37,6 @@ mixin navigation(currentPage = '/')
     .container
       ul.nav__menu(aria-expanded="false")
         for url, title in navLinks
-          - const target = title === 'Register' ? '_blank' : '' 
+          - const target = title === 'Register' || title === 'Vouchers' ? '_blank' : '' 
           li(class=(currentPage == url ? 'active' : ''))
             a(href=url target=(target))= title
