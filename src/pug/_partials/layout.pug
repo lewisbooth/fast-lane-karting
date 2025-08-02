@@ -70,9 +70,6 @@ html
       link(rel='stylesheet' href='/css/style.css' type="text/css")
  
   body    
-    //- Preloads page hyperlinks when hovered over so that they load instantly
-    script
-      include ../../../dist/js/instantPage.js
       
     block nav
       +navigation
@@ -90,9 +87,14 @@ html
 
     script
       include ../../../dist/js/dollarSelect.js
+    script
       include ../../../dist/js/mobileMenu.js
+    script
       include ../../../dist/js/openingHours.js
+    script
       include ../../../dist/js/newsletter.js
+    script
+      include ../../../dist/js/instantPage.js
 
     //- Extra scripts for individual pages
     block pageScripts
