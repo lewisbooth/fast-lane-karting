@@ -58,16 +58,12 @@ html
 
     //- Preload fonts & other assets that are linked from CSS here (such as background images), rather than wait for the browser to download and parse the CSS and request them. Much faster page loading speed in supported browsers.
     link(rel='preload' href='/fonts/BigNoodleTitling.woff2' as='font' type="font/woff2" crossorigin)
+    
+    link(rel='stylesheet' href='/css/style.css?v=' + Date.now() type="text/css")
   
     //- Block for additional preloads that are specific to individual pages
-    block pagePreloads
-
-    //- Inline styles in production using `$ gulp build`, remove this if CSS is over 40kb
-    if production
-      style
-        include ../../../dist/css/style.css
-    else
-      link(rel='stylesheet' href='/css/style.css' type="text/css")
+    block pagePreloads 
+    
  
   body    
       
@@ -85,16 +81,11 @@ html
     +footer
     +amp
 
-    script
-      include ../../../dist/js/dollarSelect.js
-    script
-      include ../../../dist/js/mobileMenu.js
-    script
-      include ../../../dist/js/openingHours.js
-    script
-      include ../../../dist/js/newsletter.js
-    script
-      include ../../../dist/js/instantPage.js
+    script(src="/js/dollarSelect.js")
+    script(src="/js/mobileMenu.js" async defer)
+    script(src="/js/openingHours.js" async defer)
+    script(src="/js/newsletter.js" async defer)
+    script(src="/js/instant.js" type="module" defer)
 
     //- Extra scripts for individual pages
     block pageScripts
