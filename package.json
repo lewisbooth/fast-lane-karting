@@ -9,8 +9,8 @@
     "verify": "node scripts/verify-build.mjs",
     "update:fastest-lap": "node scripts/update-fastest-lap.cjs",
     "test": "node --test",
-    "dev:worker": "npm run build && wrangler dev",
-    "deploy": "npm run build && wrangler deploy",
+    "dev:worker": "wrangler dev",
+    "deploy": "wrangler deploy",
     "deploy:pages": "npm run build && wrangler pages deploy dist --config wrangler.pages.jsonc"
   },
   "repository": {

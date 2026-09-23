@@ -79,11 +79,13 @@ Connect Workers Builds to this repository with these settings:
 | --- | --- |
 | Production branch | `main` |
 | Root directory | Repository root |
-| Build command | `npm run build` |
+| Build command | Leave blank; Wrangler runs `npm run build` from the repository config |
 | Deploy command | `npx wrangler deploy` |
 | Node version | Read from `.node-version` |
 
 Set the legacy newsletter secret described below before the first deployment.
+Wrangler's configured build step generates `dist/` before every deploy, so a
+fresh checkout works with the existing `npx wrangler deploy` build integration.
 After an authenticated `npm ci`, `npm run deploy` builds and deploys manually.
 For the complete site and API locally, run `npm run dev:worker`. Plain
 `npm run dev` and `npm run preview` serve only the Vite frontend, so they cannot
