@@ -1,3 +1,5 @@
+import { $ } from './dollarSelect.js'
+
 fetch('/fastest-lap.json')
     .then(res => res.json())
     .then(res => {        

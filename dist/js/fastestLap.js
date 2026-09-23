@@ -1,1 +1,0 @@
-"use strict";fetch("/fastest-lap.json").then(function(t){return t.json()}).then(function(t){$(".fastest-lap__name").innerText=t.name,$(".fastest-lap__lap-time").innerText=t.lapTime});

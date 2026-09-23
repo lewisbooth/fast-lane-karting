@@ -57,3 +57,15 @@ typings/
 # dotenv environment variables file
 *.env
 
+
+# Generated Vite HTML entries (Pug templates are in src/pages)
+/src/*.html
+/src/*.html.*.tmp
+
+# Build output is always generated from src
+/dist/
+
+# Local Cloudflare state and desktop metadata
+.wrangler/
+.dev.vars*
+.DS_Store

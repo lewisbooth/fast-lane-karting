@@ -1,3 +1,5 @@
+import { $ } from './dollarSelect.js'
+
 const light = $('.nav__right--contact--opening-hours--light')
 const label = $('.nav__right--contact--opening-hours--light span')
 

@@ -1,5 +1,5 @@
-const $ = element =>
+export const $ = element =>
   document.querySelector(element)
 
-const $$ = element =>
+export const $$ = element =>
   document.querySelectorAll(element)

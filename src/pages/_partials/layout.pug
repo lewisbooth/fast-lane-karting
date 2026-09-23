@@ -1,0 +1,86 @@
+include navigation
+include newsletter
+include footer
+include amp
+
+doctype html
+html
+  head
+    meta(http-equiv="Content-Type" content="text/html;charset=UTF-8")
+
+    //- Google Analytics
+    script(async src="https://www.googletagmanager.com/gtag/js?id=UA-149781415-2")
+    script.
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'UA-149781415-2');
+
+    //- Facebook Pixel
+    script.
+      !function(f,b,e,v,n,t,s)
+      {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+      n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+      if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+      n.queue=[];t=b.createElement(e);t.async=!0;
+      t.src=v;s=b.getElementsByTagName(e)[0];
+      s.parentNode.insertBefore(t,s)}(window,document,'script',
+      'https://connect.facebook.net/en_US/fbevents.js');
+      fbq('init', '2342639352664091'); 
+      fbq('track', 'PageView');
+
+    meta(name="author" content="AMP Studio | https://amp.studio")
+
+    //- Force insecure <iframe> requests to upgrade to https://
+    if production
+      meta(http-equiv="Content-Security-Policy" content="upgrade-insecure-requests")
+
+    block title
+      title Fast Lane Go Karting Stoke | The Midlands' #1 Indoor Karting Experience
+      
+    block description
+      meta(name="description" content="The best indoor go karting venue in Stoke-on-Trent for 25 years. High performance Sodi SR4 sprint karts, kids karts and on-site catering. Call 01782 250 450 or email enquiries@fastlanekarting.co.uk to book a go karting package.")
+      
+    meta(http-equiv="Content-Type" content="text/html; charset=utf-8")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")
+    meta(name="theme-color" content="#BB2024")
+    meta(property="og:image" content="https://fastlanekarting.amp.studio/images/home-categories/race-packages.jpg")
+
+    //- Minimal favicon setup, covers most bases. 
+    link(rel="icon" type="image/png" sizes="16x16" href="/images/favicon/favicon-16x16.png")
+    link(rel="icon" type="image/png" sizes="32x32" href="/images/favicon/favicon-32x32.png")
+    link(rel="icon" type="image/png" sizes="96x96" href="/images/favicon/favicon-96x96.png")
+    meta(name="msapplication-TileColor" content="#BB2024")
+    meta(name="msapplication-TileImage" content="/images/favicon/ms-icon-144x144.png")
+
+    //- Preload fonts & other assets that are linked from CSS here (such as background images), rather than wait for the browser to download and parse the CSS and request them. Much faster page loading speed in supported browsers.
+    link(rel='preload' href='/fonts/BigNoodleTitling.woff2' as='font' type="font/woff2" crossorigin)
+    
+    link(rel='stylesheet' href='/css/style.styl' type="text/css")
+  
+    //- Block for additional preloads that are specific to individual pages
+    block pagePreloads 
+    
+ 
+  body    
+    noscript
+      img(height="1" width="1" src="https://www.facebook.com/tr?id=2342639352664091&ev=PageView &noscript=1")
+
+    block nav
+      +navigation
+
+    block dealSticker
+      .sticker.sticker__summer
+        .container
+          a(href='/offers') Summer Holiday Offers now active
+
+    block content
+
+    +newsletter
+    +footer
+    +amp
+
+    script(type="module" src="/js/site.js")
+
+    //- Extra scripts for individual pages
+    block pageScripts

@@ -1,3 +1,5 @@
+import { $, $$ } from './dollarSelect.js'
+
 const instafeed = $("#instafeed").getBoundingClientRect()
 const placeholders = $$(".social-feed-instagram-post")
 

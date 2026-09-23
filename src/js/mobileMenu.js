@@ -1,3 +1,5 @@
+import { $ } from './dollarSelect.js'
+
 const nav = $(".nav__menu")
 const navMenuToggle = $(".nav__menu-toggle")
 

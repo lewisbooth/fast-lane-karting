@@ -1,3 +1,5 @@
+import { $ } from './dollarSelect.js'
+
 const video = $('.header-video video')
 const videoContainer = $('.header-video')
 const fullscreenButton = $('.header-video__controls--right--fullscreen')
