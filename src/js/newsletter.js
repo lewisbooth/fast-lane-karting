@@ -1,28 +1,24 @@
-// Uses an AWS Lambda function to handle contact form requests
-// AWS API Gateway throttles and denies bad requests
-
 const newsletterForm = document.forms['newsletter']
 const emailInput = newsletterForm.querySelector('input[type="email"]')
-
-const API_KEY = 'QGh25n3ixH3jm9hpRG1pd5PJQ4QXOL5L74b9Xi3C'
-const API_ENDPOINT = 'https://74386ydfki.execute-api.eu-west-1.amazonaws.com/production/fastLaneNewsletter'
+const submitButton = newsletterForm.querySelector('button[type="submit"]')
 
 newsletterForm.addEventListener('submit', submitNewsletterForm)
 
 
-function submitNewsletterForm(e) {
+async function submitNewsletterForm(e) {
   e.preventDefault()
-  const data = JSON.stringify({ email: emailInput.value })
-  fetch(API_ENDPOINT, {
-    method: 'POST',
-    headers: {
-      'x-api-key': API_KEY
-    },
-    body: data
-  })
-    .then(res => window.location = '/success')
-    .catch(err => {
-      console.log(err.response)
-      window.location = '/error'
+  if (submitButton.disabled) return
+  submitButton.disabled = true
+  try {
+    const response = await fetch('/api/newsletter', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: emailInput.value })
     })
+    const result = await response.json()
+    if (!response.ok || result.success !== true) throw new Error('Signup failed')
+    window.location.assign('/success')
+  } catch {
+    window.location.assign('/error')
+  }
 }
