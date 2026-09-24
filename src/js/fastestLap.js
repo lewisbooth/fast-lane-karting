@@ -1,8 +1,5 @@
 import { $ } from './dollarSelect.js'
+import fastestLap from '../static/fastest-lap.json'
 
-fetch('/fastest-lap.json')
-    .then(res => res.json())
-    .then(res => {        
-        $('.fastest-lap__name').innerText = res.name
-        $('.fastest-lap__lap-time').innerText = res.lapTime
-    })
+$('.fastest-lap__name').innerText = fastestLap.name
+$('.fastest-lap__lap-time').innerText = fastestLap.lapTime

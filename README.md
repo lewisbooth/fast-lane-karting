@@ -23,6 +23,9 @@ npm run preview
 ```
 
 `npm run build` creates a complete `dist/` from source, removing old output first.
+It fingerprints the copied media and fonts, rewrites CSS and page references,
+then fingerprints the final CSS. The lap snapshot is embedded in the versioned
+layout script instead of fetched separately.
 `dist/` is generated and is not committed. Any existing host serving `dist/`
 must run the build after updating this repository.
 
@@ -35,11 +38,13 @@ Tests exercise newsletter validation, input limits, fixed recipients, both email
 transports and delivery errors using mocks; they never send email.
 Verification runs two builds, starting with no `dist/`, compares every output
 file by SHA-256, checks stale-output removal, checks all page routes and local
-asset references, and verifies that copied static files are byte-identical.
+asset references, content hashes, cache rules, and verifies that copied static
+files are byte-identical.
 
 The dependency lockfile and Node version are committed. Builds do not fetch
-live business data or insert timestamps. Vite gives compiled CSS and JavaScript
-content-based filenames. The Vite migration changes compiled bytes from the old
+live business data or insert timestamps. Vite gives compiled JavaScript
+content-based filenames; the post-build step fingerprints the rewritten CSS,
+fonts, images and video under `/immutable/`. The Vite migration changes compiled bytes from the old
 Gulp output while preserving the existing page content, styling and behaviour.
 The browser target is Vite's modern-browser default; the previous ES5/IE11
 transpilation is no longer part of the build.
@@ -54,9 +59,10 @@ transpilation is no longer part of the build.
 | `src/js/` | Browser modules; `site.js` loads shared behaviour |
 | `src/js/vendor/` | Existing vendored instant-navigation script |
 | `src/worker/index.mjs` | Newsletter API and Worker asset fallback |
-| `src/static/` | Files copied unchanged: images, fonts, videos, favicon, JSON and legacy vendor assets |
+| `src/static/` | Original images, fonts, videos, favicon and JSON; `_headers` defines browser caching |
 | `functions/api/newsletter.js` | Optional Pages adapter for the same newsletter handler |
 | `scripts/pages.mjs` | Generates ignored `src/*.html` entries for Vite |
+| `scripts/version-assets.mjs` | Fingerprints media and final CSS, then rewrites page references |
 | `scripts/verify-build.mjs` | Reproducible-build and output-integrity checks |
 
 Edit the Pug templates, not the generated `src/*.html` files. Add a new named
@@ -72,6 +78,17 @@ https://fast-lane-karting.lewis-02c.workers.dev
 and the styled `404.html` for missing pages. Only `/api/*` runs the Worker first;
 other requests are served as static assets. `/offers/` and `/offers.html`
 redirect to `/offers`. No custom-domain or DNS changes are included.
+Cloudflare serves `/assets/*` and `/immutable/*` with a one-year `immutable`
+browser cache policy. Their URLs change with their contents, so subsequent page
+loads can use cached first-party assets without revalidation. HTML still
+revalidates to discover updates. External analytics and embeds follow their own
+cache policies.
+
+The previous unversioned asset paths are still included for pages already open
+when this change is deployed. Fresh builds include current content hashes; if a
+later edit changes an asset, an old page kept open across deployments could
+request its former hash after that file has left the new asset manifest. Retain
+old hashes in future builds if supporting those long-lived pages is required.
 
 Connect Workers Builds to this repository with these settings:
 
@@ -79,13 +96,12 @@ Connect Workers Builds to this repository with these settings:
 | --- | --- |
 | Production branch | `main` |
 | Root directory | Repository root |
-| Build command | Leave blank; Wrangler runs `npm run build` from the repository config |
+| Build command | `npm run build` |
 | Deploy command | `npx wrangler deploy` |
 | Node version | Read from `.node-version` |
 
 Set the legacy newsletter secret described below before the first deployment.
-Wrangler's configured build step generates `dist/` before every deploy, so a
-fresh checkout works with the existing `npx wrangler deploy` build integration.
+Cloudflare Builds runs `npm run build` once, then deploys `dist/` with Wrangler.
 After an authenticated `npm ci`, `npm run deploy` builds and deploys manually.
 For the complete site and API locally, run `npm run dev:worker`. Plain
 `npm run dev` and `npm run preview` serve only the Vite frontend, so they cannot
@@ -118,7 +134,8 @@ with a larger video, reduce its size or host it separately.
 
 ## Fastest-lap data
 
-`src/static/fastest-lap.json` is the committed snapshot used on `/layout`.
+`src/static/fastest-lap.json` is the committed snapshot bundled into the
+versioned `/layout` script, so visiting the page does not fetch the JSON.
 To update it deliberately, set `SHEET_ID` and `API_KEY` in the repository-root
 `.env` file or the environment, then run:
 
