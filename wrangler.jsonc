@@ -22,6 +22,8 @@
   },
   "vars": {
     "NEWSLETTER_TRANSPORT": "legacy",
+    "MAILCHIMP_AUDIENCE_ID": "",
+    "MAILCHIMP_OPT_IN": "",
     "NEWSLETTER_FROM": "",
     "NEWSLETTER_TO": "lewis@amp.studio"
   },
