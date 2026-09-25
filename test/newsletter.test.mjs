@@ -111,7 +111,7 @@ test('legacy transport submits only the validated email and waits for a successf
   assert.equal(submitted.url, 'https://74386ydfki.execute-api.eu-west-1.amazonaws.com/production/fastLaneNewsletter')
   assert.deepEqual(JSON.parse(submitted.options.body), { email: 'person@example.org' })
   assert.equal(submitted.options.headers['x-api-key'], 'test-key')
-  assert.equal(submitted.options.redirect, 'error')
+  assert.equal(submitted.options.redirect, 'manual')
   assert.ok(submitted.options.signal instanceof AbortSignal)
 })
 
@@ -119,6 +119,11 @@ test('legacy rejection and network errors do not falsely report success', async 
   mock.method(console, 'error', () => {})
   const fetch = mock.method(globalThis, 'fetch', async () => new Response('upstream rejected', { status: 429 }))
   const env = { NEWSLETTER_TRANSPORT: 'legacy', LEGACY_NEWSLETTER_API_KEY: 'test-key' }
+  assert.equal((await worker.fetch(request({ email: 'x@example.org' }), env)).status, 502)
+  fetch.mock.mockImplementation(async () => new Response(null, {
+    status: 302,
+    headers: { Location: 'https://untrusted.example/' }
+  }))
   assert.equal((await worker.fetch(request({ email: 'x@example.org' }), env)).status, 502)
   fetch.mock.mockImplementation(async () => { throw new Error('Network unavailable') })
   assert.equal((await worker.fetch(request({ email: 'x@example.org' }), env)).status, 502)
