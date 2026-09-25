@@ -1,3 +1,5 @@
+import { createHash } from 'node:crypto'
+
 const MAX_BODY_BYTES = 1024
 
 function json(body, status = 200, headers = {}) {
@@ -44,7 +46,49 @@ async function readJson(request) {
   }
 }
 
+async function subscribeWithMailchimp(email, env) {
+  const key = env.MAILCHIMP_API_KEY
+  const dataCenter = typeof key === 'string' && /-([a-z]{2}\d+)$/i.exec(key)?.[1]
+  const audience = env.MAILCHIMP_AUDIENCE_ID
+  const optIn = env.MAILCHIMP_OPT_IN
+  if (!dataCenter || typeof audience !== 'string' || !/^[a-zA-Z0-9]+$/.test(audience) ||
+      (optIn !== 'single' && optIn !== 'double')) {
+    throw new Error('Mailchimp configuration missing')
+  }
+
+  const hash = createHash('md5').update(email.toLowerCase()).digest('hex')
+  let response
+  try {
+    response = await fetch(`https://${dataCenter.toLowerCase()}.api.mailchimp.com/3.0/lists/${audience}/members/${hash}`, {
+      method: 'PUT',
+      headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
+      // status_if_new leaves existing unsubscribed and cleaned contacts unchanged.
+      body: JSON.stringify({ email_address: email, status_if_new: optIn === 'double' ? 'pending' : 'subscribed' }),
+      signal: AbortSignal.timeout(10000),
+      redirect: 'manual'
+    })
+  } catch (error) {
+    console.error(JSON.stringify({ event: 'newsletter_mailchimp_fetch_failed', type: error?.name || 'UnknownError' }))
+    throw error
+  }
+  if (!response.ok) {
+    await response.body?.cancel()
+    console.error(JSON.stringify({ event: 'newsletter_mailchimp_http_failure', status: response.status }))
+    throw new Error('Mailchimp rejected signup')
+  }
+  const member = await response.json()
+  if (member.status !== 'pending' && member.status !== 'subscribed') {
+    // An earlier unsubscribe or bounce must not silently count as a new signup.
+    console.error(JSON.stringify({ event: 'newsletter_mailchimp_inactive_member' }))
+    throw new Error('Mailchimp contact is not subscribed')
+  }
+  return { pending: member.status === 'pending' }
+}
+
 async function sendNotification(email, env) {
+  if (env.NEWSLETTER_TRANSPORT === 'mailchimp') {
+    return subscribeWithMailchimp(email, env)
+  }
   if (env.NEWSLETTER_TRANSPORT === 'cloudflare') {
     if (!env.EMAIL || !validEmail(env.NEWSLETTER_FROM) || !validEmail(env.NEWSLETTER_TO)) {
       throw new Error('Email configuration missing')
@@ -109,8 +153,8 @@ export default {
     if (!validEmail(email)) return json({ error: 'A valid email address is required' }, 400)
 
     try {
-      await sendNotification(email, env)
-      return json({ success: true })
+      const result = await sendNotification(email, env)
+      return json({ success: true, ...result })
     } catch {
       // Do not put submitted email addresses or provider responses into logs.
       console.error(JSON.stringify({ event: 'newsletter_delivery_failed', transport: env.NEWSLETTER_TRANSPORT }))
