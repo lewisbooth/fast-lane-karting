@@ -34,8 +34,8 @@ npm test
 npm run verify
 ```
 
-Tests exercise newsletter validation, input limits, fixed recipients, both email
-transports and delivery errors using mocks; they never send email.
+Tests exercise newsletter validation, input limits, fixed recipients, the Mailchimp
+and email transports, and delivery errors using mocks; they never send email.
 Verification runs two builds, starting with no `dist/`, compares every output
 file by SHA-256, checks stale-output removal, checks all page routes and local
 asset references, content hashes, cache rules, and verifies that copied static
@@ -174,6 +174,47 @@ The native Cloudflare email handler is implemented and covered by mocked tests.
 It sends a notification to `lewis@amp.studio`, matching the connected Gmail
 account, with the existing subject and body format and the signup address as
 Reply-To. It does not email the person signing up or send newsletter campaigns.
+
+### Direct Mailchimp signup
+
+The `mailchimp` transport adds a contact directly to Fast Lane Karting's Mailchimp
+audience. It does not send a notification to the team, use AWS, or alter mail DNS.
+Existing unsubscribed and bounced contacts are never resubscribed automatically.
+An inactive contact or Mailchimp error returns an error instead of falsely
+reporting a subscription. The browser never receives the Mailchimp API key;
+Worker logs include neither the key nor submitted email addresses. Static
+assets still bypass the Worker.
+
+1. Ask the team which existing Mailchimp audience receives their manual imports,
+   and find its ID under **Audience → More options → Audience settings → Audience ID**.
+   Check whether that audience has required merge fields beyond email; the site
+   collects only an email address.
+2. Choose the subscription method: `single` immediately subscribes new contacts;
+   `double` creates them as `pending` and sends Mailchimp's confirmation email.
+   The site's `/confirm` page tells double opt-in signups to check their inbox.
+   Review the signup wording and link to Fast Lane Karting's privacy information
+   before using the audience for marketing.
+3. In the team's Mailchimp account, create a dedicated **Marketing API key** named
+   for this site. Store it in the Worker as the encrypted `MAILCHIMP_API_KEY`
+   secret (`npx wrangler secret put MAILCHIMP_API_KEY` on an authenticated host).
+   Do not paste it into source, `.env`, chat, or browser code. The Worker derives
+   the Mailchimp data center from the suffix of the key.
+4. Set `MAILCHIMP_AUDIENCE_ID` and `MAILCHIMP_OPT_IN` in `wrangler.jsonc` to the
+   selected audience ID and `single` or `double`. Change `NEWSLETTER_TRANSPORT`
+   to `mailchimp`. Replace `LEGACY_NEWSLETTER_API_KEY` with `MAILCHIMP_API_KEY`
+   in `secrets.required` so deployments reject missing Mailchimp credentials.
+   For a Pages deployment, apply equivalent variables and the encrypted secret
+   to Pages project settings before deploying.
+5. Add Cloudflare rate limiting to `POST /api/newsletter`, then build and deploy.
+   Submit a controlled signup and verify the contact's **status** in the correct
+   Mailchimp audience; for `double`, click the confirmation link and check that
+   the status changes from `pending` to `subscribed`. Test an existing contact
+   without changing their unsubscribe status. Only after this works, stop
+   forwarding signup notifications and retire the AWS secret/service.
+
+Mailchimp API failures return 502 from the Worker without sending anything to
+AWS; the user sees the site's existing error page. The Mailchimp Marketing API
+key can access the account, so keep it private and rotate it if exposed.
 
 To finish the Cloudflare email cutover:
 
