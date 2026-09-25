@@ -17,7 +17,7 @@ async function submitNewsletterForm(e) {
     })
     const result = await response.json()
     if (!response.ok || result.success !== true) throw new Error('Signup failed')
-    window.location.assign('/success')
+    window.location.assign(result.pending === true ? '/confirm' : '/success')
   } catch {
     window.location.assign('/error')
   }
