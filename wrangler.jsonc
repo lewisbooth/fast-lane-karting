@@ -24,5 +24,10 @@
     "NEWSLETTER_TRANSPORT": "legacy",
     "NEWSLETTER_FROM": "",
     "NEWSLETTER_TO": "lewis@amp.studio"
+  },
+  "secrets": {
+    "required": [
+      "LEGACY_NEWSLETTER_API_KEY"
+    ]
   }
 }
