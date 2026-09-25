@@ -65,15 +65,24 @@ async function sendNotification(email, env) {
   if (env.NEWSLETTER_TRANSPORT !== 'legacy' || !env.LEGACY_NEWSLETTER_API_KEY) {
     throw new Error('Newsletter transport not configured')
   }
-  const response = await fetch('https://74386ydfki.execute-api.eu-west-1.amazonaws.com/production/fastLaneNewsletter', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json', 'x-api-key': env.LEGACY_NEWSLETTER_API_KEY },
-    body: JSON.stringify({ email }),
-    signal: AbortSignal.timeout(10000),
-    redirect: 'error'
-  })
+  let response
+  try {
+    response = await fetch('https://74386ydfki.execute-api.eu-west-1.amazonaws.com/production/fastLaneNewsletter', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'x-api-key': env.LEGACY_NEWSLETTER_API_KEY },
+      body: JSON.stringify({ email }),
+      signal: AbortSignal.timeout(10000),
+      redirect: 'error'
+    })
+  } catch (error) {
+    console.error(JSON.stringify({ event: 'newsletter_legacy_fetch_failed', type: error?.name || 'UnknownError' }))
+    throw error
+  }
   await response.body?.cancel()
-  if (!response.ok) throw new Error('Newsletter provider rejected request')
+  if (!response.ok) {
+    console.error(JSON.stringify({ event: 'newsletter_legacy_http_failure', status: response.status }))
+    throw new Error('Newsletter provider rejected request')
+  }
 }
 
 export default {
