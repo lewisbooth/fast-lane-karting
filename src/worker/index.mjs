@@ -72,7 +72,8 @@ async function sendNotification(email, env) {
       headers: { 'Content-Type': 'application/json', 'x-api-key': env.LEGACY_NEWSLETTER_API_KEY },
       body: JSON.stringify({ email }),
       signal: AbortSignal.timeout(10000),
-      redirect: 'error'
+      // Workers reject the `error` redirect mode. Handle 3xx as a failure below.
+      redirect: 'manual'
     })
   } catch (error) {
     console.error(JSON.stringify({ event: 'newsletter_legacy_fetch_failed', type: error?.name || 'UnknownError' }))
