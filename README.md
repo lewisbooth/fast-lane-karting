@@ -100,7 +100,8 @@ Connect Workers Builds to this repository with these settings:
 | Deploy command | `npx wrangler deploy` |
 | Node version | Read from `.node-version` |
 
-Set the legacy newsletter secret described below before the first deployment.
+Set the required secret for the selected newsletter transport before deployment.
+This feature branch requires `MAILCHIMP_API_KEY`; see the activation steps below.
 Cloudflare Builds runs `npm run build` once, then deploys `dist/` with Wrangler.
 After an authenticated `npm ci`, `npm run deploy` builds and deploys manually.
 For the complete site and API locally, run `npm run dev:worker`. Plain
@@ -159,7 +160,8 @@ checks delivery status, and returns success only when the selected provider
 accepts the request. Failed requests go to the existing `/error` page. The
 recipient is server-controlled; a submitted `to` field cannot change it.
 
-**Current transport: `legacy`.** Cloudflare's sending domain and destination
+**Production remains on `legacy` until this feature branch is promoted.**
+This branch configures direct Mailchimp signup instead. Cloudflare's sending domain and destination
 are not verified yet, so the Worker temporarily submits to the existing AWS
 service. That service retains its existing recipient and gateway throttling.
 Configure the existing gateway API key as the Worker secret
@@ -185,32 +187,54 @@ reporting a subscription. The browser never receives the Mailchimp API key;
 Worker logs include neither the key nor submitted email addresses. Static
 assets still bypass the Worker.
 
-1. Ask the team which existing Mailchimp audience receives their manual imports,
-   and find its ID under **Audience → More options → Audience settings → Audience ID**.
-   Check whether that audience has required merge fields beyond email; the site
-   collects only an email address.
-2. Choose the subscription method: `single` immediately subscribes new contacts;
-   `double` creates them as `pending` and sends Mailchimp's confirmation email.
-   The site's `/confirm` page tells double opt-in signups to check their inbox.
-   Review the signup wording and link to Fast Lane Karting's privacy information
-   before using the audience for marketing.
-3. In the team's Mailchimp account, create a dedicated **Marketing API key** named
-   for this site. Store it in the Worker as the encrypted `MAILCHIMP_API_KEY`
-   secret (`npx wrangler secret put MAILCHIMP_API_KEY` on an authenticated host).
-   Do not paste it into source, `.env`, chat, or browser code. The Worker derives
+Verified against Phil's 10 October 2026 email and the read-only Marketing API on
+11 October 2026:
+
+| Setting | Value |
+| --- | --- |
+| Audience | Fast Lane Karting (`eeb6393074`) |
+| Subscription method | `single`, matching the audience's disabled double opt-in |
+| Required merge fields | None; the existing email-only form is sufficient |
+| Worker secret | `MAILCHIMP_API_KEY`, dedicated key named Newsletter Sign-Up |
+| Key expiry reported by Phil | 10 October 2027, 16:36 GMT+1 |
+
+New contacts subscribe immediately. The optional `double` mode remains supported:
+new contacts become `pending` and the site's `/confirm` page asks them to check
+their inbox. Upserts send only `status_if_new`, so existing contacts retain their
+subscription state. Provider responses request only `status` and are size-limited.
+
+The `NEWSLETTER_RATE_LIMITER` binding permits ten validated signup attempts per
+IP address per minute. These are Cloudflare's best-effort, per-location counters,
+not a strict global quota. A blocked request returns 429 with `Retry-After: 60`;
+a missing or failing binding fails closed without contacting Mailchimp.
+
+### Staging and production activation
+
+The named `staging` environment targets
+`fast-lane-karting-mailchimp-staging`. Its workers.dev and preview URLs are disabled;
+do not add a public route while it uses the live audience. The isolated backend
+can hold the encrypted key without replacing the production Worker. For a full
+authenticated staging deployment, run `npm run build`, then
+`npx wrangler deploy --env staging`. Staging and production use separate rate-limit
+namespaces. Mocked tests do not create contacts or send confirmation emails.
+
+1. Store the key as the encrypted `MAILCHIMP_API_KEY` secret on the **production**
+   `fast-lane-karting` Worker before merging. On an authenticated host use
+   `npx wrangler secret put MAILCHIMP_API_KEY`, or use Variables and Secrets in
+   the dashboard. For isolated staging, add `--env staging` to that command.
+   Keep the value out of source, files, logs and browser code. The Worker derives
    the Mailchimp data center from the suffix of the key.
-4. Set `MAILCHIMP_AUDIENCE_ID` and `MAILCHIMP_OPT_IN` in `wrangler.jsonc` to the
-   selected audience ID and `single` or `double`. Change `NEWSLETTER_TRANSPORT`
-   to `mailchimp`. Replace `LEGACY_NEWSLETTER_API_KEY` with `MAILCHIMP_API_KEY`
-   in `secrets.required` so deployments reject missing Mailchimp credentials.
-   For a Pages deployment, apply equivalent variables and the encrypted secret
-   to Pages project settings before deploying.
-5. Add Cloudflare rate limiting to `POST /api/newsletter`, then build and deploy.
-   Submit a controlled signup and verify the contact's **status** in the correct
-   Mailchimp audience; for `double`, click the confirmation link and check that
-   the status changes from `pending` to `subscribed`. Test an existing contact
-   without changing their unsubscribe status. Only after this works, stop
-   forwarding signup notifications and retire the AWS secret/service.
+2. Merge the reviewed feature branch into `main`. Workers Builds then activates
+   the configured Mailchimp transport, audience, single opt-in and limiter.
+   Feature-branch pushes must not deploy the production Worker.
+3. Submit one explicitly approved, controlled signup and verify its subscribed
+   status in the audience. Confirm an already-unsubscribed contact is not
+   resubscribed. Only after verification should the team stop forwarding signup
+   notifications and retire the AWS secret/service. Retain the legacy secret
+   until then for rollback.
+
+For a Pages deployment, configure equivalent variables, the encrypted secret
+and a `NEWSLETTER_RATE_LIMITER` binding in the Pages project before switching.
 
 Mailchimp API failures return 502 from the Worker without sending anything to
 AWS; the user sees the site's existing error page. The Mailchimp Marketing API

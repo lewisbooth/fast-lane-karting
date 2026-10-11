@@ -21,15 +21,51 @@
     "head_sampling_rate": 1
   },
   "vars": {
-    "NEWSLETTER_TRANSPORT": "legacy",
-    "MAILCHIMP_AUDIENCE_ID": "",
-    "MAILCHIMP_OPT_IN": "",
+    "NEWSLETTER_TRANSPORT": "mailchimp",
+    "MAILCHIMP_AUDIENCE_ID": "eeb6393074",
+    "MAILCHIMP_OPT_IN": "single",
     "NEWSLETTER_FROM": "",
     "NEWSLETTER_TO": "lewis@amp.studio"
   },
   "secrets": {
     "required": [
-      "LEGACY_NEWSLETTER_API_KEY"
+      "MAILCHIMP_API_KEY"
     ]
+  },
+  "ratelimits": [
+    {
+      "name": "NEWSLETTER_RATE_LIMITER",
+      "namespace_id": "731650726411001",
+      "simple": { "limit": 10, "period": 60 }
+    }
+  ],
+  "env": {
+    "staging": {
+      "name": "fast-lane-karting-mailchimp-staging",
+      "workers_dev": false,
+      "preview_urls": false,
+      "vars": {
+        "NEWSLETTER_TRANSPORT": "mailchimp",
+        "MAILCHIMP_AUDIENCE_ID": "eeb6393074",
+        "MAILCHIMP_OPT_IN": "single",
+        "NEWSLETTER_FROM": "",
+        "NEWSLETTER_TO": "lewis@amp.studio"
+      },
+      "assets": {
+        "directory": "./dist",
+        "binding": "ASSETS",
+        "html_handling": "drop-trailing-slash",
+        "not_found_handling": "404-page",
+        "run_worker_first": ["/api/*"]
+      },
+      "secrets": { "required": ["MAILCHIMP_API_KEY"] },
+      "ratelimits": [
+        {
+          "name": "NEWSLETTER_RATE_LIMITER",
+          "namespace_id": "731650726411002",
+          "simple": { "limit": 10, "period": 60 }
+        }
+      ]
+    }
   }
 }

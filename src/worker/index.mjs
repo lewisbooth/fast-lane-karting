@@ -59,7 +59,7 @@ async function subscribeWithMailchimp(email, env) {
   const hash = createHash('md5').update(email.toLowerCase()).digest('hex')
   let response
   try {
-    response = await fetch(`https://${dataCenter.toLowerCase()}.api.mailchimp.com/3.0/lists/${audience}/members/${hash}`, {
+    response = await fetch(`https://${dataCenter.toLowerCase()}.api.mailchimp.com/3.0/lists/${audience}/members/${hash}?fields=status`, {
       method: 'PUT',
       headers: { Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' },
       // status_if_new leaves existing unsubscribed and cleaned contacts unchanged.
@@ -76,8 +76,8 @@ async function subscribeWithMailchimp(email, env) {
     console.error(JSON.stringify({ event: 'newsletter_mailchimp_http_failure', status: response.status }))
     throw new Error('Mailchimp rejected signup')
   }
-  const member = await response.json()
-  if (member.status !== 'pending' && member.status !== 'subscribed') {
+  const member = await readJson(response)
+  if (member?.status !== 'pending' && member?.status !== 'subscribed') {
     // An earlier unsubscribe or bounce must not silently count as a new signup.
     console.error(JSON.stringify({ event: 'newsletter_mailchimp_inactive_member' }))
     throw new Error('Mailchimp contact is not subscribed')
@@ -153,6 +153,18 @@ export default {
     if (!validEmail(email)) return json({ error: 'A valid email address is required' }, 400)
 
     try {
+      if (env.NEWSLETTER_TRANSPORT === 'mailchimp') {
+        if (typeof env.NEWSLETTER_RATE_LIMITER?.limit !== 'function') {
+          throw new Error('Newsletter rate limiter not configured')
+        }
+        const limit = await env.NEWSLETTER_RATE_LIMITER.limit({
+          key: `newsletter:${request.headers.get('CF-Connecting-IP') || 'unknown'}`
+        })
+        if (limit?.success === false) {
+          return json({ error: 'Too many requests. Please try again later.' }, 429, { 'Retry-After': '60' })
+        }
+        if (limit?.success !== true) throw new Error('Newsletter rate limiter failed')
+      }
       const result = await sendNotification(email, env)
       return json({ success: true, ...result })
     } catch {

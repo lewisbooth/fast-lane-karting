@@ -134,7 +134,71 @@ const mailchimpEnv = (optIn = 'double') => ({
   NEWSLETTER_TRANSPORT: 'mailchimp',
   MAILCHIMP_API_KEY: 'private-test-key-us21',
   MAILCHIMP_AUDIENCE_ID: 'abc123',
-  MAILCHIMP_OPT_IN: optIn
+  MAILCHIMP_OPT_IN: optIn,
+  NEWSLETTER_RATE_LIMITER: { limit: async () => ({ success: true }) }
+})
+
+test('Mailchimp validates input and awaits rate limiting before contacting the provider', async () => {
+  let allow
+  const allowed = new Promise(resolve => { allow = resolve })
+  const limit = mock.fn(async () => allowed)
+  const env = { ...mailchimpEnv(), NEWSLETTER_RATE_LIMITER: { limit } }
+  const fetch = mock.method(globalThis, 'fetch', async () => Response.json({ status: 'pending' }))
+  assert.equal((await worker.fetch(request({ email: 'invalid' }), env)).status, 400)
+  assert.equal(limit.mock.callCount(), 0)
+  assert.equal(fetch.mock.callCount(), 0)
+
+  const responsePromise = worker.fetch(request({ email: 'person@example.org' }, {
+    headers: { 'Content-Type': 'application/json', Origin: origin, 'CF-Connecting-IP': '203.0.113.42' }
+  }), env)
+  await new Promise(resolve => setImmediate(resolve))
+  assert.deepEqual(limit.mock.calls[0].arguments, [{ key: 'newsletter:203.0.113.42' }])
+  assert.equal(fetch.mock.callCount(), 0)
+  allow({ success: true })
+  assert.equal((await responsePromise).status, 200)
+  assert.equal(fetch.mock.callCount(), 1)
+
+  assert.equal((await worker.fetch(request({ email: 'person@example.org' }), env)).status, 200)
+  assert.deepEqual(limit.mock.calls[1].arguments, [{ key: 'newsletter:unknown' }])
+})
+
+test('Mailchimp rate limiting returns 429 with a retry time and never contacts the provider', async () => {
+  const limit = mock.fn(async () => ({ success: false }))
+  const fetch = mock.method(globalThis, 'fetch', async () => { throw new Error('Must not contact provider') })
+  const response = await worker.fetch(request({ email: 'person@example.org' }), {
+    ...mailchimpEnv(), NEWSLETTER_RATE_LIMITER: { limit }
+  })
+  assert.equal(response.status, 429)
+  assert.equal(response.headers.get('retry-after'), '60')
+  assert.equal(response.headers.get('cache-control'), 'no-store')
+  assert.deepEqual(await response.json(), { error: 'Too many requests. Please try again later.' })
+  assert.equal(limit.mock.callCount(), 1)
+  assert.equal(fetch.mock.callCount(), 0)
+})
+
+test('Mailchimp missing, failed and malformed rate limiter bindings fail closed without sensitive logs', async () => {
+  const email = 'private@example.org'
+  const log = mock.method(console, 'error', () => {})
+  const fetch = mock.method(globalThis, 'fetch', async () => { throw new Error('Must not contact provider') })
+  for (const binding of [
+    undefined,
+    {},
+    { limit: 'invalid' },
+    { limit: async () => { throw new Error(`${email} private-test-key-us21 203.0.113.42`) } },
+    { limit: async () => null },
+    { limit: async () => ({}) },
+    { limit: async () => ({ success: 'true' }) }
+  ]) {
+    const response = await worker.fetch(request({ email }), {
+      ...mailchimpEnv(), NEWSLETTER_RATE_LIMITER: binding
+    })
+    assert.equal(response.status, 502)
+    assert.deepEqual(await response.json(), { error: 'Unable to submit your request. Please try again later.' })
+  }
+  assert.equal(fetch.mock.callCount(), 0)
+  for (const value of [email, 'private-test-key-us21', '203.0.113.42']) {
+    assert.ok(log.mock.calls.every(call => !JSON.stringify(call.arguments).includes(value)))
+  }
 })
 
 test('Mailchimp subscribes through the Worker without changing existing subscription status', async () => {
@@ -149,7 +213,7 @@ test('Mailchimp subscribes through the Worker without changing existing subscrip
   assert.deepEqual(await response.json(), { success: true, pending: true })
   assert.equal(fetch.mock.callCount(), 1)
   const hash = createHash('md5').update(email.toLowerCase()).digest('hex')
-  assert.equal(sent.url, `https://us21.api.mailchimp.com/3.0/lists/abc123/members/${hash}`)
+  assert.equal(sent.url, `https://us21.api.mailchimp.com/3.0/lists/abc123/members/${hash}?fields=status`)
   assert.equal(sent.options.method, 'PUT')
   assert.equal(sent.options.headers.Authorization, 'Bearer private-test-key-us21')
   assert.deepEqual(JSON.parse(sent.options.body), { email_address: email, status_if_new: 'pending' })
@@ -165,11 +229,32 @@ test('Mailchimp subscribes through the Worker without changing existing subscrip
   assert.deepEqual(JSON.parse(sent.options.body), { email_address: email, status_if_new: 'subscribed' })
 })
 
+test('Mailchimp preserves an existing member status when it differs from the configured opt-in', async () => {
+  const submitted = []
+  const fetch = mock.method(globalThis, 'fetch', async (url, options) => {
+    submitted.push({ url, body: JSON.parse(options.body) })
+    return Response.json({ status: submitted.length === 1 ? 'subscribed' : 'pending' })
+  })
+  const email = 'person@example.org'
+  const subscribed = await worker.fetch(request({ email }), mailchimpEnv('double'))
+  assert.equal(subscribed.status, 200)
+  assert.deepEqual(await subscribed.json(), { success: true, pending: false })
+  const pending = await worker.fetch(request({ email }), mailchimpEnv('single'))
+  assert.equal(pending.status, 200)
+  assert.deepEqual(await pending.json(), { success: true, pending: true })
+  assert.deepEqual(submitted.map(({ body }) => body), [
+    { email_address: email, status_if_new: 'pending' },
+    { email_address: email, status_if_new: 'subscribed' }
+  ])
+  assert.equal(fetch.mock.callCount(), 2)
+  assert.ok(submitted.every(({ url }) => url.startsWith('https://us21.api.mailchimp.com/')))
+})
+
 test('Mailchimp inactive members and upstream failures do not report success or fall back', async () => {
   const log = mock.method(console, 'error', () => {})
   const fetch = mock.method(globalThis, 'fetch', async () => Response.json({ status: 'unsubscribed' }))
   const email = 'private@example.org'
-  for (const status of ['unsubscribed', 'cleaned']) {
+  for (const status of ['unsubscribed', 'cleaned', 'transactional']) {
     fetch.mock.mockImplementation(async () => Response.json({ status }))
     assert.equal((await worker.fetch(request({ email }), mailchimpEnv())).status, 502)
   }
@@ -177,8 +262,62 @@ test('Mailchimp inactive members and upstream failures do not report success or 
   assert.equal((await worker.fetch(request({ email }), mailchimpEnv())).status, 502)
   fetch.mock.mockImplementation(async () => new Response(null, { status: 302 }))
   assert.equal((await worker.fetch(request({ email }), mailchimpEnv())).status, 502)
-  assert.equal(fetch.mock.callCount(), 4)
+  assert.equal(fetch.mock.callCount(), 5)
   assert.ok(log.mock.calls.every(call => !JSON.stringify(call.arguments).includes(email)))
+})
+
+test('Mailchimp rejects malformed, null and oversized responses without exposing provider data or falling back', async () => {
+  const email = 'private@example.org'
+  const providerData = 'provider-private@example.org'
+  const log = mock.method(console, 'error', () => {})
+  const fetch = mock.method(globalThis, 'fetch', async () => { throw new Error('Mock response must be configured') })
+  let cancelled = false
+  const oversizedStream = new ReadableStream({
+    start(controller) { controller.enqueue(new TextEncoder().encode(providerData.repeat(50))) },
+    cancel() { cancelled = true }
+  })
+  const responses = [
+    new Response(`{"status":"pending","private":"${providerData}"`),
+    Response.json(null),
+    Response.json({}),
+    new Response(new Uint8Array([0xff])),
+    Response.json({ status: 'pending' }, { headers: { 'Content-Length': '1025' } }),
+    new Response(oversizedStream)
+  ]
+  for (const upstream of responses) {
+    fetch.mock.mockImplementation(async () => upstream)
+    const response = await worker.fetch(request({ email }), mailchimpEnv())
+    assert.equal(response.status, 502)
+    assert.deepEqual(await response.json(), { error: 'Unable to submit your request. Please try again later.' })
+  }
+  assert.equal(cancelled, true)
+  assert.equal(fetch.mock.callCount(), responses.length)
+  assert.ok(fetch.mock.calls.every(call => call.arguments[0].startsWith('https://us21.api.mailchimp.com/')))
+  for (const value of [email, providerData, 'private-test-key-us21']) {
+    assert.ok(log.mock.calls.every(call => !JSON.stringify(call.arguments).includes(value)))
+  }
+})
+
+test('Mailchimp provider rate limits, network failures and timeouts do not report success or fall back', async () => {
+  const email = 'private@example.org'
+  const log = mock.method(console, 'error', () => {})
+  const fetch = mock.method(globalThis, 'fetch', async () => new Response(email, { status: 429 }))
+  const implementations = [
+    async () => new Response(email, { status: 429 }),
+    async () => { throw new Error(`${email} private-test-key-us21`) },
+    async () => { throw new DOMException(`${email} private-test-key-us21`, 'TimeoutError') }
+  ]
+  for (const implementation of implementations) {
+    fetch.mock.mockImplementation(implementation)
+    const response = await worker.fetch(request({ email }), mailchimpEnv())
+    assert.equal(response.status, 502)
+    assert.deepEqual(await response.json(), { error: 'Unable to submit your request. Please try again later.' })
+  }
+  assert.equal(fetch.mock.callCount(), implementations.length)
+  assert.ok(fetch.mock.calls.every(call => call.arguments[0].startsWith('https://us21.api.mailchimp.com/')))
+  for (const value of [email, 'private-test-key-us21']) {
+    assert.ok(log.mock.calls.every(call => !JSON.stringify(call.arguments).includes(value)))
+  }
 })
 
 test('Mailchimp requires the audience, key and explicit opt-in choice before contacting the API', async () => {
