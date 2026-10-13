@@ -2,6 +2,7 @@ import { createHash } from 'node:crypto'
 import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync } from 'node:fs'
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { absoluteSocialImageUrls } from './social-metadata.mjs'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
 const source = path.join(root, 'src/static')
@@ -73,7 +74,7 @@ for (const relative of walk(output).filter(name => name.endsWith('.html'))) {
   for (const [original, versioned] of urls) {
     if (original.startsWith('/assets/')) html = html.replaceAll(`"${original}"`, `"${versioned}"`)
   }
-  writeFileSync(filename, html)
+  writeFileSync(filename, absoluteSocialImageUrls(html))
 }
 
 console.log(`Versioned ${urls.size} static assets; HTML remains revalidatable.`)

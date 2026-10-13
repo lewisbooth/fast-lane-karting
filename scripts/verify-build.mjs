@@ -4,6 +4,7 @@ import { execFileSync } from 'node:child_process'
 import { existsSync, readdirSync, readFileSync, rmSync, statSync, writeFileSync } from 'node:fs'
 import { join } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { siteOrigin } from './social-metadata.mjs'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
 const dist = join(root, 'dist')
@@ -54,6 +55,13 @@ for (const prefix of ['/assets/*', '/immutable/*']) {
 }
 
 const assetUrl = /^\/(assets|immutable)\//
+function metaContent(html, name) {
+  const matches = [...html.matchAll(/<meta\s+(?:name|property)="([^"]+)"\s+content="([^"]*)"[^>]*>/g)]
+    .filter(match => match[1] === name)
+  assert.equal(matches.length, 1, `Expected one ${name} tag`)
+  assert.ok(matches[0][2].trim(), `Empty ${name} tag`)
+  return matches[0][2]
+}
 for (const relative of Object.keys(first).filter(name => name.startsWith('assets/'))) {
   assert.match(relative, /^assets\/[^/]+-[A-Za-z0-9_-]{8,}\.js$/, `Unversioned Vite output: ${relative}`)
 }
@@ -65,6 +73,46 @@ for (const relative of Object.keys(first).filter(name => name.startsWith('immuta
 
 for (const filename of pages) {
   const html = readFileSync(join(dist, filename), 'utf8')
+  assert.ok(!html.includes('fastlanekarting.amp.studio'), `${filename} still depends on the old image host.`)
+  const title = metaContent(html, 'og:title')
+  const description = metaContent(html, 'og:description')
+  const documentTitle = html.match(/<title>([\s\S]*?)<\/title>/)?.[1].trim()
+  const titleText = value => value.replaceAll('&amp;', '&').replaceAll('&quot;', '"')
+  assert.equal(titleText(title), titleText(documentTitle), `${filename} has the wrong sharing title.`)
+  assert.equal(metaContent(html, 'twitter:title'), title)
+  assert.equal(metaContent(html, 'twitter:description'), description)
+  assert.equal(description, metaContent(html, 'description'), `${filename} has inconsistent descriptions.`)
+  assert.equal(metaContent(html, 'og:type'), 'website')
+  assert.equal(metaContent(html, 'og:site_name'), 'Fast Lane Karting')
+  assert.equal(metaContent(html, 'og:locale'), 'en_GB')
+  assert.equal(metaContent(html, 'twitter:card'), 'summary_large_image')
+  const image = new URL(metaContent(html, 'og:image'))
+  assert.equal(image.origin, siteOrigin, `${filename} has an external sharing image.`)
+  assert.match(image.pathname, /^\/immutable\/images\/.*\.[a-f0-9]{16}\.jpg$/)
+  assert.ok(existsSync(join(dist, image.pathname.slice(1))), `${filename} has a missing sharing image.`)
+  assert.equal(metaContent(html, 'twitter:image'), image.href)
+  assert.equal(metaContent(html, 'twitter:image:alt'), metaContent(html, 'og:image:alt'))
+  assert.equal(metaContent(html, 'og:image:type'), 'image/jpeg')
+  assert.ok(Number(metaContent(html, 'og:image:width')) > 0)
+  assert.ok(Number(metaContent(html, 'og:image:height')) > 0)
+  if (filename === '404.html') {
+    assert.ok(!html.includes('rel="canonical"'), 'The shared 404 page must not claim a canonical route.')
+    assert.equal(metaContent(html, 'robots'), 'noindex')
+  } else {
+    const url = `${siteOrigin}${filename === 'index.html' ? '/' : `/${filename.slice(0, -5)}`}`
+    assert.equal(metaContent(html, 'og:url'), url)
+    const canonical = [...html.matchAll(/<link rel="canonical" href="([^"]+)"/g)]
+    assert.equal(canonical.length, 1, `${filename} needs one canonical URL.`)
+    assert.equal(canonical[0][1], url)
+  }
+  if (filename === 'offers.html') {
+    const source = readFileSync(join(root, 'src/pages/offers.pug'), 'utf8')
+    assert.match(source, /block socialImage/, 'Offers needs its own campaign image override.')
+    const selected = source.match(/meta\(property="og:image" content="([^"]+)"\)/)?.[1]
+    assert.ok(selected, 'Offers must select a sharing image.')
+    assert.equal(image.pathname.replace(/^\/immutable/, '').replace(/\.[a-f0-9]{16}(?=\.[^.]+$)/, ''), selected,
+      'Offers sharing image must match the current campaign, not the default image.')
+  }
   assert.ok(!html.includes('/css/style.styl'), `${filename} still references source styles.`)
   assert.ok(!/style\.css\?v=\d+/.test(html), `${filename} still has timestamp cache busting.`)
   for (const [, url] of html.matchAll(/(?:src|href)="(\/[^"#?]*)[^\"]*"/g)) {
@@ -86,4 +134,4 @@ for (const filename of Object.keys(first).filter(name => name.endsWith('.css')))
   }
 }
 assert.ok(!readFileSync(join(dist, 'layout.html'), 'utf8').includes('/fastest-lap.json'), 'Lap JSON should be bundled with the page script.')
-console.log(`Verified ${pages.length} pages and ${Object.keys(first).length} reproducible files with immutable asset references.`)
+console.log(`Verified ${pages.length} pages and ${Object.keys(first).length} reproducible files with immutable assets and complete sharing metadata.`)

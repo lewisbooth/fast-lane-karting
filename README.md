@@ -152,6 +152,23 @@ never called by the build, so Google Sheets access is not required to deploy.
 
 Booking, race timing, maps and the track tour retain their existing providers.
 
+## Social sharing previews
+
+Page-specific Open Graph and Twitter titles/descriptions are derived from each
+rendered page's title and description. Canonical URLs use the production apex
+domain and slashless named routes; the shared 404 page remains `noindex` and does
+not claim a canonical route. The layout's `socialImage` block supplies the default
+image and can be overridden by an individual page. Offers uses the existing
+Halloween artwork and its current offer dates.
+
+Use root-relative source image paths in that block. The build fingerprints them
+alongside other media, then emits absolute HTTPS image URLs on
+`fastlanekarting.co.uk`. Images retain the immutable cache policy and bypass the
+Worker. `npm run verify` checks required tags, canonical routes, image files and
+the removal of the old image host. After an offer changes, ask Meta's Sharing
+Debugger to scrape `https://fastlanekarting.co.uk/offers` again and inspect any
+existing ad creative separately if it still shows old text.
+
 ## Newsletter delivery
 
 The browser submits JSON to same-origin `POST /api/newsletter`. The Worker

@@ -2,6 +2,7 @@ import { existsSync, readdirSync, readFileSync, renameSync, rmSync, writeFileSyn
 import { basename, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import pug from 'pug'
+import { addSocialMetadata } from './social-metadata.mjs'
 
 export const sourceDir = fileURLToPath(new URL('../src/', import.meta.url))
 export const pagesDir = resolve(sourceDir, 'pages')
@@ -12,7 +13,7 @@ export function renderPages({ production }) {
   const templates = readdirSync(pagesDir).filter(name => name.endsWith('.pug')).sort()
   const rendered = templates.map(name => ({
     name: name.replace(/\.pug$/, '.html'),
-    html: pug.renderFile(resolve(pagesDir, name), { production })
+    html: addSocialMetadata(pug.renderFile(resolve(pagesDir, name), { production }), basename(name, '.pug'))
   }))
 
   // Compile everything before replacing intermediates, so a template error
