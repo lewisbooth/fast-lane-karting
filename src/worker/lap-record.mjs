@@ -71,7 +71,7 @@ function editorPage(record, isFallback) {
     <form method="post" action="${ADMIN_PATH}" autocomplete="off">
       <label for="name">Driver name</label><input id="name" name="name" value="${escapeHtml(record.name)}" maxlength="${MAX_NAME_LENGTH}" required>
       <label for="lapTime">Lap time in seconds</label><input id="lapTime" name="lapTime" value="${escapeHtml(record.lapTime)}" inputmode="decimal" pattern="[0-9]+(\\.[0-9]{1,3})?" required>
-      <small>Up to three decimal places; greater than 0 and less than 600 seconds.</small>
+      <small>Up to three decimal places.</small>
       <label for="password">Editor password</label><input id="password" name="password" type="password" autocomplete="off" required>
       <button type="submit">Save lap record</button>
     </form><p><a href="/layout">View track layout</a></p>`)
