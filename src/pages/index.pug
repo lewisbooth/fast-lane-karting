@@ -5,18 +5,23 @@ block pageScripts
 
 block content
   .header-video
-    video(src="/video/fast-lane-karting-header.mp4" poster="/video/fast-lane-karting-header-poster.jpg" preload loop muted playsinline)
+    picture.header-video__poster
+      source(media="(max-width: 500px)" srcset="/video/fast-lane-karting-header-poster-small.webp" type="image/webp")
+      source(media="(max-width: 767px)" srcset="/video/fast-lane-karting-header-poster-mobile.webp" type="image/webp")
+      img(src="/video/fast-lane-karting-header-poster-laptop.webp" srcset="/video/fast-lane-karting-header-poster-laptop.webp 1366w, /video/fast-lane-karting-header-poster-hd.webp 1920w" sizes="100vw" alt="" width="1366" height="405" fetchpriority="high")
+    video(src="/video/fast-lane-karting-header.mp4" preload="none" loop muted playsinline width="1920" height="1080" aria-label="Karting at Fast Lane Karting")
     .header-video__controls
       .container
-        .header-video__controls--play-pause
-          img(id='play' src='/images/video-controls/play.svg' alt='Play Button')
-          img(id='pause' src='/images/video-controls/pause.svg' alt='Pause Button')
+        button.header-video__controls--play-pause(type='button' aria-label='Play video')
+          img(id='play' src='/images/video-controls/play.svg' alt='' width='65' height='65')
+          img(id='pause' src='/images/video-controls/pause.svg' alt='' width='65' height='65')
         .header-video__controls--right
-          .header-video__controls--right--audio
-            img(id='muted' src='/images/video-controls/muted.svg' alt='Unmute Button')
-            img(id='unmuted' src='/images/video-controls/unmuted.svg' alt='Mute Button')
-          .header-video__controls--right--fullscreen
-            img(id='fullscreen' src='/images/video-controls/fullscreen.svg' alt='Fullscreen Button')
+          button.header-video__controls--right--audio(type='button' aria-label='Unmute video')
+            img(id='muted' src='/images/video-controls/muted.svg' alt='' width='54' height='54')
+            img(id='unmuted' src='/images/video-controls/unmuted.svg' alt='' width='52' height='52')
+          button.header-video__controls--right--fullscreen(type='button' aria-label='View video fullscreen')
+            img(id='fullscreen' src='/images/video-controls/fullscreen.svg' alt='' width='102' height='75')
+    p.header-video__status.visually-hidden(role='status')
   .header-video__refurb(href="/layout" target="_blank")
     .container 
       a(href="/layout" target="_blank") We have now undergone a multilevel track refurbishment. Please click here to view.
@@ -33,28 +38,28 @@ block content
     .container
       .category-cards__card
         .category-cards__card--image
-          img(src='/images/home-categories/race-packages.jpg' alt='Race Packages')
+          img(src='/images/home-categories/race-packages.webp' alt='Race Packages' width='377' height='208' loading='eager' fetchpriority='high' decoding='async')
         .category-cards__card--text
           h2 Race Packages
           .red-highlight
           p The perfect choice for team building, stag/hen parties and group events! Pit your skill and endurance against each other with our selection of Grand Prix and Endurance race packages. Racing times range from 30 to 150 minutes with food provided on-site.
-          a.button.button__primary(href='/race-packages') Book Online
+          a.button.button__primary(href='/race-packages' aria-label='View race packages and book online') Book Online
       .category-cards__card
         .category-cards__card--image
-          img(src='/images/home-categories/arrive-and-drive.jpg' alt='Arrive & Drive')
+          img(src='/images/home-categories/arrive-and-drive.webp' alt='Arrive & Drive' width='377' height='208' loading='lazy' decoding='async')
         .category-cards__card--text
           h2 Arrive & Drive
           .red-highlight
           p There's no need to book for small groups - turn up at any time and drive for up to 100 laps! Drivers aged 12 years or older are welcome anytime as long as the track is available. High performance 200cc karts are available for ages 14 and over.
-          a.button.button__primary(href='/arrive-and-drive') Book Online
+          a.button.button__primary(href='/arrive-and-drive' aria-label='View Arrive and Drive and book online') Book Online
       .category-cards__card
         .category-cards__card--image
-          img(src='/images/home-categories/juniors-and-parties.jpg' alt='Juniors & Parties')
+          img(src='/images/home-categories/juniors-and-parties.webp' alt='Juniors & Parties' width='377' height='208' loading='lazy' decoding='async')
         .category-cards__card--text
           h2 Juniors & Parties
           .red-highlight
           p Go-karting makes a great birthday party or family event for up to 8 people. Our junior packages include up to one hour of track time per driver, a hot meal and drinks in our private corporate lounge overlooking the track, plus medals and a trophy for the birthday host.
-          a.button.button__primary(href='/juniors-and-parties') Book Online
+          a.button.button__primary(href='/juniors-and-parties' aria-label='View junior karting and party packages and book online') Book Online
           
   section.black.corporate-events
     .container.center

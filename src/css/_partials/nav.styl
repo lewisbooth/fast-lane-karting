@@ -78,13 +78,14 @@ nav, .nav
         &:focus, &:hover
           text-decoration none
 
-      h3
+      .nav__phone-number
         font-family Arial, Helvetica, sans-serif
         letter-spacing 0
         font-size 2.9rem
         font-weight 900
         margin 0
         color white
+        line-height 1.1
 
       &--opening-hours
         display flex
@@ -148,6 +149,10 @@ nav, .nav
     
     &-toggle
       display none
+      background transparent
+      border 0
+      border-radius 0
+      text-transform none
       align-items center
       padding 1.75rem 1rem 1.75rem 1.75rem
       user-select none
@@ -182,6 +187,7 @@ nav, .nav
         white-space nowrap
         padding .75rem 1.5rem
         display block
+        min-height 44px
         color white
         user-select none
 
@@ -252,7 +258,7 @@ nav, .nav
         margin-right 0
         justify-content space-between
 
-        h3
+        .nav__phone-number
           font-size 18px
           white-space nowrap
 
@@ -278,6 +284,7 @@ nav, .nav
       z-index -1
       transition transform .3s
       will-change transform
+      visibility hidden
 
       & li a
         width 100vw
@@ -302,6 +309,7 @@ nav, .nav
       &.active
         transform translateY(-1px)
         border-bottom 2px solid primaryColor
+        visibility visible
 
   .main-title
     position relative

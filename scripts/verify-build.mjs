@@ -124,6 +124,18 @@ for (const filename of pages) {
       'Offers sharing image must match the current campaign, not the default image.')
   }
   assert.ok(!html.includes('/css/style.styl'), `${filename} still references source styles.`)
+  for (const [, sources] of html.matchAll(/\bsrcset="([^"]+)"/g)) {
+    for (const source of sources.split(',')) {
+      const [url] = source.trim().split(/\s+/)
+      assert.match(url, /^\/immutable\//, `${filename} has an unversioned responsive image.`)
+      assert.ok(existsSync(join(dist, url.slice(1))), `${filename} has a missing responsive image: ${url}`)
+    }
+  }
+  assert.ok(!/<link\b[^>]*rel="stylesheet"/.test(html), `${filename} has a render-blocking stylesheet request.`)
+  for (const [, url] of html.matchAll(/url\(['"]?(\/[^)'"\s]+)['"]?\)/g)) {
+    assert.match(url, /^\/immutable\//, `${filename} has an unversioned inline CSS asset.`)
+    assert.ok(existsSync(join(dist, url.slice(1))), `${filename} has a missing inline CSS asset: ${url}`)
+  }
   assert.ok(!/style\.css\?v=\d+/.test(html), `${filename} still has timestamp cache busting.`)
   for (const [, url] of html.matchAll(/(?:src|href)="(\/[^"#?]*)[^\"]*"/g)) {
     const pathname = decodeURIComponent(url).slice(1)

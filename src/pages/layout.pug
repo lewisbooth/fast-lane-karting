@@ -29,13 +29,27 @@ block content
             span.fastest-lap__name= fastestLap.name
           p.fastest-lap__status(hidden)
           
-        .track__image
-          img(src='/images/track-layout/track-layout-2021.jpg')
+        a.track__image(href='/images/track-layout/track-layout-2021.jpg' target='_blank' rel='noopener noreferrer' data-no-instant aria-label='Open the full-size track diagram in a new tab')
+          picture
+            source(media='(max-width: 767px)' type='image/avif' srcset='/images/track-layout/track-layout-2021-small.avif')
+            source(type='image/avif' srcset='/images/track-layout/track-layout-2021-small.avif 384w, /images/track-layout/track-layout-2021-medium.avif 640w, /images/track-layout/track-layout-2021-large.avif 960w' sizes='(max-width: 767px) 85vw, (max-width: 1023px) 76vw, 45vw')
+            img(src='/images/track-layout/track-layout-2021.webp' alt='Diagram of the top and bottom track levels, ramps, pit lane and race flags' width='960' height='1436' fetchpriority='high')
 
       h2.center 3D Track Tour
       .red-highlight.centered
-      iframe.track__matterport(src='https://my.360picture.uk/tour/fastlane-karting' height='600' width='100%' allowfullscreen)
+      .media-embed.media-embed--tour(data-embed-src='https://my.360picture.uk/tour/fastlane-karting' data-embed-title='3D tour of the Fast Lane Karting track')
+        .media-embed__stage
+          .media-embed__placeholder
+            p Explore the track in the interactive 3D tour.
+            button.media-embed__load(type='button' hidden) Load 3D track tour
+        a.media-embed__direct(href='https://my.360picture.uk/tour/fastlane-karting' target='_blank' rel='noopener noreferrer') Open the 3D track tour in a new tab
 
       h2.center Onboard Video
       .red-highlight.centered
-      video.track__onboard(src="/video/track-layout.mp4" poster="/video/track-layout-poster.jpg" controls)
+      .media-video(data-video-src='/video/track-layout.mp4')
+        a.media-video__trigger(href='/video/track-layout.mp4' aria-label='Play onboard video of the Fast Lane Karting track' data-no-instant)
+          picture.media-video__poster
+            source(type='image/avif' srcset='/video/track-layout-poster-small.avif 480w, /video/track-layout-poster-medium.avif 720w, /video/track-layout-poster-large.avif 1200w' sizes='(min-width: 1280px) 1200px, 95vw')
+            img(src='/video/track-layout-poster.webp' alt='' width='1280' height='720' loading='lazy' decoding='async')
+          span.media-video__play Play onboard video
+        a.media-video__direct(href='/video/track-layout.mp4' target='_blank' rel='noopener noreferrer' data-no-instant) Open onboard video directly

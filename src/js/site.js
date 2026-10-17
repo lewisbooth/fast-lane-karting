@@ -1,4 +1,5 @@
 import './mobileMenu.js'
 import './openingHours.js'
 import './newsletter.js'
+import './mediaEmbeds.js'
 import './vendor/instant.js'

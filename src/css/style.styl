@@ -6,6 +6,7 @@
 @import '_partials/buttons'
 @import '_partials/nav'
 @import '_partials/forms'
+@import '_partials/media-embeds'
 
 body
   margin-top 11.8rem
@@ -57,6 +58,24 @@ body
 
   video 
     width 100%
+    height auto
+    opacity 0
+
+  &__poster
+    position absolute
+    inset 0
+
+    img
+      width 100%
+      height 100%
+      object-fit cover
+
+  &.started
+    video
+      opacity 1
+
+    .header-video__poster
+      display none
 
   &__controls
     width 100%
@@ -65,6 +84,13 @@ body
     background rgba(0,0,0,.75)
     transform translateY(100%)
     transition transform .35s ease-in-out
+
+    button
+      background transparent
+      border 0
+      border-radius 0
+      min-width 44px
+      min-height 44px
 
     .container
       height 100%
@@ -94,7 +120,7 @@ body
       display flex
       align-items center
 
-      > div
+      > button
         opacity .5
         padding .5rem
         margin-left 1rem
@@ -140,11 +166,20 @@ body
     #unmuted
       opacity 1
 
-  &:hover
-    cursor pointer
-
+  &:hover, &:focus-within, &:not(.playing)
     .header-video__controls
       transform translateY(0)      
+
+  &:fullscreen
+    height 100vh
+    justify-content center
+
+    video
+      max-height 100vh
+      object-fit contain
+
+    .header-video__controls
+      transform translateY(0)
       
 .main-title
 
@@ -272,7 +307,8 @@ body
     justify-content center
     flex-wrap wrap
 
-    h4
+    h2
+      font-size 2.8rem
       margin 0 4rem 0 0
 
     form
@@ -311,7 +347,8 @@ body
     .red-highlight
       margin-bottom 2rem
 
-    h5
+    h2
+      font-size 2.4rem
       color white
 
     ul
@@ -321,6 +358,9 @@ body
       font-size 1.6rem
       color white
       text-decoration underline
+      display inline-flex
+      align-items center
+      min-height 44px
 
       &:hover
         color primaryColor
@@ -343,11 +383,18 @@ body
 
   &__social 
     display flex
+    gap 2rem
     margin-top 2rem
+
+    a
+      display flex
+      justify-content center
+      align-items center
+      min-width 44px
+      min-height 44px
     
     img 
       width 4rem
-      margin-right 2rem
 
 .amp
   background richBlack
@@ -364,6 +411,7 @@ body
     a
       display flex
       align-items center
+      min-height 44px
 
     img
       width 7rem
@@ -385,11 +433,11 @@ body
     > div
       width 48%
 
-      h5
+      .contact__label
         font-family sansSerif
         text-transform uppercase
         font-weight bold
-        color primaryColor 
+        color primaryColorAccent
         font-size 1.4rem
         margin 2rem 0 0 0
         letter-spacing 0
@@ -411,11 +459,18 @@ body
 
   &__social 
     display flex
+    gap 2rem
     margin-top 1rem
+
+    a
+      display flex
+      align-items center
+      justify-content center
+      min-width 44px
+      min-height 44px
     
     img 
       width 4rem
-      margin-right 2rem
 
 .race-packages
 
@@ -598,7 +653,7 @@ body
   .newsletter .container
     flex-direction column
 
-    h4
+    h2
       text-align center
       margin 0
 
@@ -662,7 +717,7 @@ body
       &--play-pause      
         opacity 1
 
-      &--right > div
+      &--right > button
         opacity 1
 
   .main-title h1
@@ -672,9 +727,11 @@ body
 
     .container
       flex-direction column
+      align-items center
 
     &__card
       width 100%
+      max-width 335px
       margin-bottom 2rem
 
       .button

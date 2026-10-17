@@ -26,7 +26,10 @@ npm run preview
 
 `npm run build` creates a complete `dist/` from source, removing old output first.
 It fingerprints the copied media and fonts, rewrites CSS and page references,
-then fingerprints the final CSS. The published lap snapshot is rendered directly
+then fingerprints the final CSS. Each page includes only its applicable styles
+in the HTML so its first paint does not wait for a stylesheet request. Browser
+interaction states are retained explicitly by `scripts/page-styles.mjs`. Fonts,
+media and scripts keep immutable content-addressed URLs. The published lap snapshot is rendered directly
 into the layout HTML, so it is visible without JavaScript or a separate request.
 `dist/` is generated and is not committed. Any existing host serving `dist/`
 must run the build after updating this repository.
@@ -69,7 +72,8 @@ transpilation is no longer part of the build.
 | `src/static/` | Original images, fonts, videos, favicon and JSON; `_headers` defines browser caching |
 | `functions/api/newsletter.js` | Optional Pages adapter for the same newsletter handler |
 | `scripts/pages.mjs` | Generates ignored `src/*.html` entries for Vite |
-| `scripts/version-assets.mjs` | Fingerprints media and final CSS, then rewrites page references |
+| `scripts/version-assets.mjs` | Fingerprints media and CSS, rewrites responsive image URLs and embeds page styles |
+| `scripts/page-styles.mjs` | Removes styles for absent components while retaining responsive and interaction states |
 | `scripts/verify-build.mjs` | Reproducible-build and output-integrity checks |
 
 Edit the Pug templates, not the generated `src/*.html` files. Add a new named
@@ -188,6 +192,38 @@ source file and deploying updates the fallback; it does not overwrite a valid
 record already stored in KV. Builds validate the fallback and require no
 Google Sheets access. The historical `update:fastest-lap` script remains a
 manual source-snapshot helper and is not part of the live editor or build.
+
+## Accessibility and loading checks
+
+All public page templates declare their language, permit browser zoom and use a
+main landmark with ordered headings. Interactive menu and video controls are
+native buttons with accessible names; newsletter email entry has an explicit
+label. Touch targets and small red links meet the audited size and contrast
+requirements. Image dimensions reserve layout space.
+
+The home video loads on request instead of downloading automatically. Its
+responsive WebP poster selects one matching image for the viewport and pixel
+density; the original video remains available with playback, mute and fullscreen
+controls. Responsive AVIF track images and below-fold images reduce downloads.
+The track tour, map and onboard video load when requested, with direct links
+available without JavaScript. Original JPEGs
+remain available for sharing metadata and existing URLs.
+
+Run the build and tests before auditing the production homepage with Lighthouse:
+
+```sh
+npm test
+npm run verify
+npx lighthouse@13.5.0 https://fastlanekarting.co.uk/ --output=html --output-path=lighthouse-mobile.html
+npx lighthouse@13.5.0 https://fastlanekarting.co.uk/ --preset=desktop --output=html --output-path=lighthouse-desktop.html
+```
+
+Use an installed Chrome/Chromium or set `CHROME_PATH`. Audit linked content pages
+as well as the homepage. Lighthouse's diagnostic network graph and manual checks
+are not failed automated audits. Keep third-party attribution visible: Google
+tags and Facebook Pixel have their own script/cache/cookie findings. Do not
+disable tracking or bypass audits to produce a misleading score. The lap editor
+and newsletter handler are covered separately by the Worker tests.
 
 ## External integrations
 

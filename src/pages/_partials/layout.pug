@@ -4,9 +4,9 @@ include footer
 include amp
 
 doctype html
-html
+html(lang="en-GB")
   head
-    meta(http-equiv="Content-Type" content="text/html;charset=UTF-8")
+    meta(charset="utf-8")
 
     //- Google Analytics
     script(async src="https://www.googletagmanager.com/gtag/js?id=UA-149781415-2")
@@ -41,8 +41,7 @@ html
     block description
       meta(name="description" content="The best indoor go karting venue in Stoke-on-Trent for 25 years. High performance Sodi SR4 sprint karts, kids karts and on-site catering. Call 01782 250 450 or email enquiries@fastlanekarting.co.uk to book a go karting package.")
       
-    meta(http-equiv="Content-Type" content="text/html; charset=utf-8")
-    meta(name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no")
+    meta(name="viewport" content="width=device-width, initial-scale=1.0")
     meta(name="theme-color" content="#BB2024")
     block socialImage
       meta(property="og:image" content="/images/home-categories/race-packages.jpg")
@@ -59,6 +58,7 @@ html
 
     //- Preload fonts & other assets that are linked from CSS here (such as background images), rather than wait for the browser to download and parse the CSS and request them. Much faster page loading speed in supported browsers.
     link(rel='preload' href='/fonts/BigNoodleTitling.woff2' as='font' type="font/woff2" crossorigin)
+    link(rel='preload' href='/images/crossed-flags.png' as='image' media='(min-width: 768px)' fetchpriority='high')
     
     link(rel='stylesheet' href='/css/style.styl' type="text/css")
   
@@ -68,7 +68,7 @@ html
  
   body    
     noscript
-      img(height="1" width="1" src="https://www.facebook.com/tr?id=2342639352664091&ev=PageView &noscript=1")
+      img(height="1" width="1" alt="" src="https://www.facebook.com/tr?id=2342639352664091&ev=PageView&noscript=1")
 
     block nav
       +navigation
@@ -78,7 +78,8 @@ html
         .container
           a(href='/offers') Spooktober Offers: 23rd October - 2nd November
 
-    block content
+    main#main-content
+      block content
 
     +newsletter
     +footer

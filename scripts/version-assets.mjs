@@ -3,6 +3,7 @@ import { existsSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync
 import path from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { absoluteSocialImageUrls } from './social-metadata.mjs'
+import { pageStyles } from './page-styles.mjs'
 
 const root = fileURLToPath(new URL('../', import.meta.url))
 const source = path.join(root, 'src/static')
@@ -32,6 +33,15 @@ function emit(relative, bytes) {
 }
 
 function rewriteLocalUrls(content) {
+  content = content.replace(/\b(srcset|imagesrcset)="([^"]+)"/g, (_attribute, name, candidates) => {
+    const rewritten = candidates.split(',').map(candidate => {
+      const [original, descriptor] = candidate.trim().split(/\s+/)
+      const replacement = original.startsWith('/') ? urls.get(original) : original
+      if (!replacement) throw new Error(`Unknown responsive image: ${original}`)
+      return descriptor ? `${replacement} ${descriptor}` : replacement
+    }).join(', ')
+    return `${name}="${rewritten}"`
+  })
   // A quote before / distinguishes local references from absolute external URLs.
   return content.replace(/(["'])\/(images|fonts|video|favicon\.ico|fastest-lap\.json)([^"'\s<>)]*)/g, (full, quote, segment, rest) => {
     const original = `/${segment}${rest}`
@@ -74,6 +84,10 @@ for (const relative of walk(output).filter(name => name.endsWith('.html'))) {
   for (const [original, versioned] of urls) {
     if (original.startsWith('/assets/')) html = html.replaceAll(`"${original}"`, `"${versioned}"`)
   }
+  // Include this page's styles in HTML so first paint never waits for a CSS
+  // request. Fonts and media retain their immutable URLs.
+  html = html.replace(/<link\b(?=[^>]*\brel="stylesheet")(?=[^>]*\bhref="(\/immutable\/styles\/[^\"]+\.css)")[^>]*>/g,
+    (_link, stylesheet) => `<style>${pageStyles(readFileSync(path.join(output, stylesheet.slice(1)), 'utf8'), html)}</style>`)
   writeFileSync(filename, absoluteSocialImageUrls(html))
 }
 

@@ -1,21 +1,30 @@
 import { $ } from './dollarSelect.js'
 
-const nav = $(".nav__menu")
-const navMenuToggle = $(".nav__menu-toggle")
-
+const nav = $('.nav__menu')
+const navMenuToggle = $('.nav__menu-toggle')
+const mobile = window.matchMedia('(max-width: 767px)')
 let active = false
 
-navMenuToggle.addEventListener("click", toggleMenu)
-
-function toggleMenu() {
-  if (active) {
-    nav.classList.remove("active")
-    navMenuToggle.classList.remove("active")
-    nav.setAttribute("aria-expanded", "false")
-  } else {
-    nav.classList.add("active")
-    navMenuToggle.classList.add("active")
-    nav.setAttribute("aria-expanded", "true")
-  }
-  active = !active
+function updateMenu() {
+  nav.classList.toggle('active', active)
+  navMenuToggle.classList.toggle('active', active)
+  navMenuToggle.setAttribute('aria-expanded', String(active))
+  nav.inert = mobile.matches && !active
 }
+
+navMenuToggle.addEventListener('click', () => {
+  active = !active
+  updateMenu()
+})
+mobile.addEventListener('change', () => {
+  active = false
+  updateMenu()
+})
+document.addEventListener('keydown', event => {
+  if (event.key === 'Escape' && active) {
+    active = false
+    updateMenu()
+    navMenuToggle.focus()
+  }
+})
+updateMenu()

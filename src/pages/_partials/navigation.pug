@@ -14,28 +14,28 @@ mixin navigation(currentPage = '/')
       'Contact Us'          :'/contact',
     }  
 
-  nav.nav__primary
+  nav.nav__primary(aria-label="Main navigation")
     .container
-      a(href='/')
-        img.nav__logo(src='/images/logos/fast-lane-karting-logo-plain.svg' alt='Fast Lane Karting Logo')
-      .nav__menu-toggle Menu
-        .nav__menu-toggle-icon
+      a(href='/' aria-label='Fast Lane Karting home')
+        img.nav__logo(src='/images/logos/fast-lane-karting-logo-plain.svg' alt='Fast Lane Karting' width='257' height='47')
+      button.nav__menu-toggle(type='button' aria-controls='main-menu' aria-expanded='false') Menu
+        .nav__menu-toggle-icon(aria-hidden='true')
           .nav__menu-toggle-icon-bar
           .nav__menu-toggle-icon-bar
           .nav__menu-toggle-icon-bar
       .nav__right
         .nav__right--contact
           a(href='tel:01782250450')
-            h3 01782 250 450
+            span.nav__phone-number 01782 250 450
           .nav__right--contact--opening-hours
             .nav__right--contact--opening-hours--light
               span Open Now
             span #[span.hide-mobile Open every day] 10:00am - 10:30pm
         a.button.nav__right--book-now(href='https://fastlane.bookmykarting.co.uk/book/385/booking.aspx' target='_blank') Book Now
 
-  nav.nav__secondary
+  nav.nav__secondary(aria-label="Site pages")
     .container
-      ul.nav__menu(aria-expanded="false")
+      ul.nav__menu#main-menu
         for url, title in navLinks
           - const target = title === 'Register' || title === 'Vouchers' ? '_blank' : '' 
           li(class=(currentPage == url ? 'active' : ''))
