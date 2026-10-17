@@ -13,7 +13,12 @@
     "html_handling": "drop-trailing-slash",
     "not_found_handling": "404-page",
     "run_worker_first": [
-      "/api/*"
+      "/api/*",
+      "/layout",
+      "/layout/",
+      "/layout.html",
+      "/admin/lap-record",
+      "/admin/lap-record/"
     ]
   },
   "observability": {
@@ -29,14 +34,26 @@
   },
   "secrets": {
     "required": [
-      "MAILCHIMP_API_KEY"
+      "MAILCHIMP_API_KEY",
+      "LAP_RECORD_PASSWORD"
     ]
   },
   "ratelimits": [
     {
       "name": "NEWSLETTER_RATE_LIMITER",
       "namespace_id": "731650726411001",
-      "simple": { "limit": 10, "period": 60 }
+      "simple": {
+        "limit": 10,
+        "period": 60
+      }
+    },
+    {
+      "name": "LAP_RECORD_RATE_LIMITER",
+      "namespace_id": "731650726411003",
+      "simple": {
+        "limit": 10,
+        "period": 60
+      }
     }
   ],
   "env": {
@@ -56,16 +73,51 @@
         "binding": "ASSETS",
         "html_handling": "drop-trailing-slash",
         "not_found_handling": "404-page",
-        "run_worker_first": ["/api/*"]
+        "run_worker_first": [
+          "/api/*",
+          "/layout",
+          "/layout/",
+          "/layout.html",
+          "/admin/lap-record",
+          "/admin/lap-record/"
+        ]
       },
-      "secrets": { "required": ["MAILCHIMP_API_KEY"] },
+      "secrets": {
+        "required": [
+          "MAILCHIMP_API_KEY",
+          "LAP_RECORD_PASSWORD"
+        ]
+      },
       "ratelimits": [
         {
           "name": "NEWSLETTER_RATE_LIMITER",
           "namespace_id": "731650726411002",
-          "simple": { "limit": 10, "period": 60 }
+          "simple": {
+            "limit": 10,
+            "period": 60
+          }
+        },
+        {
+          "name": "LAP_RECORD_RATE_LIMITER",
+          "namespace_id": "731650726411004",
+          "simple": {
+            "limit": 10,
+            "period": 60
+          }
+        }
+      ],
+      "kv_namespaces": [
+        {
+          "binding": "LAP_RECORDS",
+          "id": "868aca5ff7cb49bdb1927fa2d142ead4"
         }
       ]
     }
-  }
+  },
+  "kv_namespaces": [
+    {
+      "binding": "LAP_RECORDS",
+      "id": "aa6f6dbaa9d14c059d5a1be7b7b2f4d3"
+    }
+  ]
 }

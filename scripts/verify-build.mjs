@@ -54,6 +54,16 @@ for (const prefix of ['/assets/*', '/immutable/*']) {
   assert.ok(headers.includes(`${prefix}\n  Cache-Control: public, max-age=31536000, immutable`), `Missing immutable rule for ${prefix}`)
 }
 
+const wrangler = JSON.parse(readFileSync(join(root, 'wrangler.jsonc'), 'utf8'))
+const workerRoutes = ['/api/*', '/layout', '/layout/', '/layout.html', '/admin/lap-record', '/admin/lap-record/'].sort()
+assert.ok(wrangler.env?.staging, 'The isolated staging Worker must be configured.')
+for (const [environment, config] of [['production', wrangler], ['staging', wrangler.env.staging]]) {
+  assert.equal(config.assets?.binding, 'ASSETS', `${environment} must retain the static asset binding.`)
+  assert.ok(Array.isArray(config.assets?.run_worker_first), `${environment} needs explicit Worker routes.`)
+  assert.deepEqual([...config.assets.run_worker_first].sort(), workerRoutes,
+    `${environment} must run only the API, layout and lap-record editor through the Worker; immutable assets must bypass it.`)
+}
+
 const assetUrl = /^\/(assets|immutable)\//
 function metaContent(html, name) {
   const matches = [...html.matchAll(/<meta\s+(?:name|property)="([^"]+)"\s+content="([^"]*)"[^>]*>/g)]
@@ -133,5 +143,16 @@ for (const filename of Object.keys(first).filter(name => name.endsWith('.css')))
     assert.ok(existsSync(join(dist, url.slice(1))), `Missing CSS asset: ${url}`)
   }
 }
-assert.ok(!readFileSync(join(dist, 'layout.html'), 'utf8').includes('/fastest-lap.json'), 'Lap JSON should be bundled with the page script.')
+const layout = readFileSync(join(dist, 'layout.html'), 'utf8')
+const fallback = JSON.parse(readFileSync(join(root, 'src/static/fastest-lap.json'), 'utf8'))
+const escapeText = value => String(value).trim().replace(/[&<>\"]/g, character => ({
+  '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;'
+})[character])
+assert.ok(layout.includes(`<span class="fastest-lap__name">${escapeText(fallback.name)}</span>`), 'Layout HTML must contain the escaped published fallback name.')
+assert.ok(layout.includes(`<span class="fastest-lap__lap-time">${escapeText(fallback.lapTime)}</span>`), 'Layout HTML must contain the published fallback lap time.')
+assert.ok(layout.includes('<p class="fastest-lap__status" hidden></p>'), 'Layout needs a hidden status notice after the fallback record.')
+assert.ok(!layout.includes('Loading...'), 'The lap record must be present before JavaScript runs.')
+assert.ok(!layout.includes('fastest-lap.json'), 'The lap record must not require a browser JSON request.')
+assert.ok(!/fastestLap(?:-[A-Za-z0-9_-]+)?\.js/.test(layout), 'The old layout script must not overwrite the Worker-rendered lap record.')
+assert.ok(!Object.keys(first).some(name => /^assets\/fastestLap-.*\.js$/.test(name)), 'The unused lap snapshot script must not be bundled.')
 console.log(`Verified ${pages.length} pages and ${Object.keys(first).length} reproducible files with immutable assets and complete sharing metadata.`)

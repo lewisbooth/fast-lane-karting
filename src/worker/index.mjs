@@ -1,4 +1,5 @@
 import { createHash } from 'node:crypto'
+import { routeLapRecord } from './lap-record.mjs'
 
 const MAX_BODY_BYTES = 1024
 
@@ -133,6 +134,8 @@ async function sendNotification(email, env) {
 export default {
   async fetch(request, env) {
     const url = new URL(request.url)
+    const lapRecordResponse = await routeLapRecord(request, env, url)
+    if (lapRecordResponse) return lapRecordResponse
     if (!url.pathname.startsWith('/api/')) return env.ASSETS.fetch(request)
     if (url.pathname !== '/api/newsletter') return json({ error: 'Not found' }, 404)
     if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405, { Allow: 'POST' })

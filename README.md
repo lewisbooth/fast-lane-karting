@@ -1,6 +1,8 @@
 # Fast Lane Karting
 
-Static website for https://www.fastlanekarting.co.uk, built with Vite, Pug and Stylus.
+Website for https://www.fastlanekarting.co.uk, built with Vite, Pug and Stylus.
+Most pages and all first-party assets are static; the track layout page includes
+a live lap record rendered by the Cloudflare Worker.
 
 ## Development
 
@@ -24,8 +26,8 @@ npm run preview
 
 `npm run build` creates a complete `dist/` from source, removing old output first.
 It fingerprints the copied media and fonts, rewrites CSS and page references,
-then fingerprints the final CSS. The lap snapshot is embedded in the versioned
-layout script instead of fetched separately.
+then fingerprints the final CSS. The published lap snapshot is rendered directly
+into the layout HTML, so it is visible without JavaScript or a separate request.
 `dist/` is generated and is not committed. Any existing host serving `dist/`
 must run the build after updating this repository.
 
@@ -36,10 +38,14 @@ npm run verify
 
 Tests exercise newsletter validation, input limits, fixed recipients, the Mailchimp
 and email transports, and delivery errors using mocks; they never send email.
+Lap-record tests cover editor validation, password checks, storage failures,
+route handling and the public HTML fallback without modifying live KV data.
 Verification runs two builds, starting with no `dist/`, compares every output
 file by SHA-256, checks stale-output removal, checks all page routes and local
 asset references, content hashes, cache rules, and verifies that copied static
-files are byte-identical.
+files are byte-identical. It also checks that layout HTML contains the published
+lap record without its old browser script and that only the intended dynamic
+routes run the Worker first in production and staging.
 
 The dependency lockfile and Node version are committed. Builds do not fetch
 live business data or insert timestamps. Vite gives compiled JavaScript
@@ -58,7 +64,8 @@ transpilation is no longer part of the build.
 | `src/css/` | Stylus styles and partials |
 | `src/js/` | Browser modules; `site.js` loads shared behaviour |
 | `src/js/vendor/` | Existing vendored instant-navigation script |
-| `src/worker/index.mjs` | Newsletter API and Worker asset fallback |
+| `src/worker/index.mjs` | Newsletter API, lap-record routing and Worker asset fallback |
+| `src/worker/lap-record.mjs` | Password-protected editor, KV storage and layout HTML rewriting |
 | `src/static/` | Original images, fonts, videos, favicon and JSON; `_headers` defines browser caching |
 | `functions/api/newsletter.js` | Optional Pages adapter for the same newsletter handler |
 | `scripts/pages.mjs` | Generates ignored `src/*.html` entries for Vite |
@@ -75,14 +82,16 @@ The primary target is the existing `fast-lane-karting` Worker:
 https://fast-lane-karting.lewis-02c.workers.dev
 
 `wrangler.jsonc` serves `dist/` as Static Assets, using slashless named routes
-and the styled `404.html` for missing pages. Only `/api/*` runs the Worker first;
-other requests are served as static assets. `/offers/` and `/offers.html`
-redirect to `/offers`. No custom-domain or DNS changes are included.
+and the styled `404.html` for missing pages. Only `/api/*`, `/layout` and its
+redirect aliases, and `/admin/lap-record` and its trailing-slash alias run the
+Worker first. Other requests are served as static assets. `/offers/` and
+`/offers.html` redirect to `/offers`. No custom-domain or DNS changes are included.
 Cloudflare serves `/assets/*` and `/immutable/*` with a one-year `immutable`
 browser cache policy. Their URLs change with their contents, so subsequent page
-loads can use cached first-party assets without revalidation. HTML still
-revalidates to discover updates. External analytics and embeds follow their own
-cache policies.
+loads can use cached first-party assets without revalidation. Static HTML still
+revalidates to discover updates. The dynamic `/layout` HTML and editor responses
+use `Cache-Control: no-store`; their linked assets keep the immutable policy and
+bypass the Worker. External analytics and embeds follow their own cache policies.
 
 The previous unversioned asset paths are still included for pages already open
 when this change is deployed. Fresh builds include current content hashes; if a
@@ -102,11 +111,13 @@ Connect Workers Builds to this repository with these settings:
 
 Set the required secret for the selected newsletter transport before deployment.
 This feature branch requires `MAILCHIMP_API_KEY`; see the activation steps below.
+The lap-record editor also requires `LAP_RECORD_PASSWORD` and its `LAP_RECORDS`
+KV binding; see Fastest-lap data below.
 Cloudflare Builds runs `npm run build` once, then deploys `dist/` with Wrangler.
 After an authenticated `npm ci`, `npm run deploy` builds and deploys manually.
 For the complete site and API locally, run `npm run dev:worker`. Plain
-`npm run dev` and `npm run preview` serve only the Vite frontend, so they cannot
-process signup submissions.
+`npm run dev` and `npm run preview` serve only the Vite frontend, so they show the
+published lap fallback and cannot process signup submissions or lap-record edits.
 
 ## Optional Cloudflare Pages deployment
 
@@ -132,21 +143,51 @@ server process. No deployment or DNS change is performed by `npm run build`.
 
 The two videos remain below Pages' 25 MiB per-file limit. If replacing either
 with a larger video, reduce its size or host it separately.
+The live lap-record editor and HTML rewriting described below target Workers.
+The optional Pages setup serves the published fallback unless equivalent
+lap-record routing and bindings are added for that host.
 
 ## Fastest-lap data
 
-`src/static/fastest-lap.json` is the committed snapshot bundled into the
-versioned `/layout` script, so visiting the page does not fetch the JSON.
-To update it deliberately, set `SHEET_ID` and `API_KEY` in the repository-root
-`.env` file or the environment, then run:
+Open `https://fastlanekarting.co.uk/admin/lap-record` to update the live record.
+Enter the driver name, lap time in seconds and editor password, then save.
+Names may contain up to 80 characters; times must be greater than zero and less
+than 600 seconds, with up to three decimal places. Saves are password-protected
+and rate-limited. The editor confirmation means KV accepted the write; allow
+at least 60 seconds, and possibly longer, for propagation to every location.
 
-```sh
-npm run update:fastest-lap
-npm run build
-```
+The Worker stores the record in the `LAP_RECORDS` KV namespace under the key
+`current`. On `/layout`, it reads that record and uses `HTMLRewriter` to replace
+the name and time in the page's initial HTML response. There is no browser JSON
+request, Google Sheets polling or scheduled Sheets job. Only `/layout` becomes
+dynamic public HTML; its images, fonts, CSS, JavaScript and video remain static
+with their existing immutable URLs and Worker bypass.
 
-Commit the changed JSON to make the next deployment use it. This command is
-never called by the build, so Google Sheets access is not required to deploy.
+Before deploying, provision a KV namespace and configure it as `LAP_RECORDS`,
+then set the encrypted Worker secret `LAP_RECORD_PASSWORD` using Variables and
+Secrets in the Cloudflare dashboard or `npx wrangler secret put
+LAP_RECORD_PASSWORD`. Configure `LAP_RECORD_RATE_LIMITER` as declared in
+`wrangler.jsonc`. Production and staging must use separate KV namespaces,
+password secrets and rate-limit namespaces; add `--env staging` when setting
+the staging secret. Feature-branch testing must not write to production KV.
+
+The record can also be edited in Cloudflare's KV dashboard: select the correct
+environment's namespace and update `current` with a JSON object containing
+`name`, `lapTime` and `updatedAt`. Use a string such as `"26.024"` for `lapTime`
+to retain decimal precision, and a valid ISO 8601 timestamp for `updatedAt`.
+The same name and time limits apply to dashboard edits. Do not delete or recreate
+the namespace during routine deployments: KV data persists when Worker code or
+static assets are redeployed.
+
+`src/static/fastest-lap.json` is the committed fallback, rendered into the static
+layout HTML during the build and included in the Worker. If `current` has not
+been saved, the published fallback is shown. If KV is unavailable or its stored
+record is invalid, the Worker shows that fallback with a visible notice. The
+name and lap time are available even with JavaScript disabled. Editing this
+source file and deploying updates the fallback; it does not overwrite a valid
+record already stored in KV. Builds validate the fallback and require no
+Google Sheets access. The historical `update:fastest-lap` script remains a
+manual source-snapshot helper and is not part of the live editor or build.
 
 ## External integrations
 

@@ -1,8 +1,5 @@
 extends _partials/layout
 
-block pageScripts
-  script(type="module" src="/js/fastestLap.js")
-
 block nav
   +navigation('/layout')
 
@@ -28,8 +25,9 @@ block content
 
           .red-strip All-time fastest lap
           .fastest-lap
-            span.fastest-lap__lap-time -
-            span.fastest-lap__name Loading...
+            span.fastest-lap__lap-time= fastestLap.lapTime
+            span.fastest-lap__name= fastestLap.name
+          p.fastest-lap__status(hidden)
           
         .track__image
           img(src='/images/track-layout/track-layout-2021.jpg')
