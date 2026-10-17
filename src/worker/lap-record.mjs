@@ -52,7 +52,8 @@ function page(body, status = 200, extraHeaders = {}) {
       'Content-Type': 'text/html; charset=utf-8',
       'Cache-Control': 'no-store',
       'X-Robots-Tag': 'noindex, nofollow',
-      'Referrer-Policy': 'no-referrer',
+      // Native form POSTs send Origin: null under no-referrer.
+      'Referrer-Policy': 'same-origin',
       'X-Content-Type-Options': 'nosniff',
       'Content-Security-Policy': "default-src 'none'; style-src 'unsafe-inline'; form-action 'self'; base-uri 'none'; frame-ancestors 'none'",
       ...extraHeaders

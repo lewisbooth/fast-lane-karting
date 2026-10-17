@@ -146,7 +146,8 @@ test('public editor shows the current record and never leaks the secret into HTM
   assert.ok(!html.includes('<script'))
   assert.equal(response.headers.get('cache-control'), 'no-store')
   assert.equal(response.headers.get('x-robots-tag'), 'noindex, nofollow')
-  assert.equal(response.headers.get('referrer-policy'), 'no-referrer')
+  // Preserve the browser's Origin on same-origin native form submissions.
+  assert.equal(response.headers.get('referrer-policy'), 'same-origin')
   assert.match(response.headers.get('content-security-policy'), /form-action 'self'/)
 })
 
@@ -183,6 +184,7 @@ test('bad origin, form, password, name and lap time never write', async () => {
   const store = env({ LAP_RECORDS: { get: async () => null, put } })
   const badRequests = [
     [form({}, { headers: { Origin: 'https://other.example', 'Content-Type': 'application/x-www-form-urlencoded' } }), 403],
+    [form({}, { headers: { Origin: 'null', 'Content-Type': 'application/x-www-form-urlencoded' } }), 403],
     [form({}, { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }), 403],
     [form({}, { headers: { Origin: origin, 'Content-Type': 'text/plain' } }), 415],
     [form({ password: 'wrong' }), 403],
