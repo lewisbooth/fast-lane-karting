@@ -9,6 +9,7 @@ const root = fileURLToPath(new URL('../', import.meta.url))
 const source = path.join(root, 'src/static')
 const output = path.join(root, 'dist')
 const urls = new Map()
+const headingFont = `data:font/woff2;base64,${readFileSync(path.join(source, 'fonts/BigNoodleTitling.woff2')).toString('base64')}`
 
 function walk(directory, prefix = '') {
   return readdirSync(directory, { withFileTypes: true }).sort((a, b) => a.name.localeCompare(b.name)).flatMap(entry => {
@@ -53,6 +54,12 @@ function rewriteLocalUrls(content) {
 
 function rewriteCssUrls(content) {
   return content.replace(/url\((['"]?)(\/[^)'"\s]+)\1\)/g, (full, quote, original) => {
+    // This single small heading face is needed in the fixed navigation before
+    // first paint. Inline it with the page styles so slow font requests cannot
+    // replace the condensed lettering with an overflowing system fallback.
+    if (original === '/fonts/BigNoodleTitling.woff2') {
+      return `url("${headingFont}")`
+    }
     const replacement = urls.get(original)
     if (!replacement) throw new Error(`Unknown CSS asset: ${original}`)
     return `url(${quote}${replacement}${quote})`
@@ -87,7 +94,7 @@ for (const relative of walk(output).filter(name => name.endsWith('.html'))) {
   // Include this page's styles in HTML so first paint never waits for a CSS
   // request. Fonts and media retain their immutable URLs.
   html = html.replace(/<link\b(?=[^>]*\brel="stylesheet")(?=[^>]*\bhref="(\/immutable\/styles\/[^\"]+\.css)")[^>]*>/g,
-    (_link, stylesheet) => `<style>${pageStyles(readFileSync(path.join(output, stylesheet.slice(1)), 'utf8'), html)}</style>`)
+    (_link, stylesheet) => `<link rel="preload" as="font" type="font/woff2" href="${headingFont}" crossorigin><style>${pageStyles(readFileSync(path.join(output, stylesheet.slice(1)), 'utf8'), html)}</style>`)
   writeFileSync(filename, absoluteSocialImageUrls(html))
 }
 

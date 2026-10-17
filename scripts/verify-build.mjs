@@ -132,6 +132,9 @@ for (const filename of pages) {
     }
   }
   assert.ok(!/<link\b[^>]*rel="stylesheet"/.test(html), `${filename} has a render-blocking stylesheet request.`)
+  assert.ok(html.includes('data:font/woff2;base64,'), `${filename} must include the small navigation font before first paint.`)
+  assert.ok(/<link\b[^>]*as="font"[^>]*href="data:font\/woff2;base64,/.test(html), `${filename} must discover the embedded font before layout.`)
+  assert.ok(!/<link\b[^>]*as="font"[^>]*href="\//.test(html), `${filename} must not fetch a second copy of the embedded font.`)
   for (const [, url] of html.matchAll(/url\(['"]?(\/[^)'"\s]+)['"]?\)/g)) {
     assert.match(url, /^\/immutable\//, `${filename} has an unversioned inline CSS asset.`)
     assert.ok(existsSync(join(dist, url.slice(1))), `${filename} has a missing inline CSS asset: ${url}`)

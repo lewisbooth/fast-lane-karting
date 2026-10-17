@@ -204,10 +204,13 @@ requirements. Image dimensions reserve layout space.
 The home video loads on request instead of downloading automatically. Its
 responsive WebP poster selects one matching image for the viewport and pixel
 density; the original video remains available with playback, mute and fullscreen
-controls. Responsive AVIF track images and below-fold images reduce downloads.
-The track tour, map and onboard video load when requested, with direct links
-available without JavaScript. Original JPEGs
-remain available for sharing metadata and existing URLs.
+controls. The small heading font is embedded in the page styles so the fixed
+navigation has its condensed lettering before first paint, without a font
+request or a late swap moving page content. Responsive AVIF track
+images and below-fold images reduce downloads. The track tour, map, timing
+widgets and onboard video load when requested, with direct links available
+without JavaScript. Original JPEGs remain available for sharing metadata and
+existing URLs.
 
 Run the build and tests before auditing the production homepage with Lighthouse:
 

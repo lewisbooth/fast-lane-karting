@@ -18,4 +18,9 @@ block content
       p.center.race-packages__description Register using the button below before visiting Fast Lane to keep track of your scores.
       .center.race-packages__description
         a(href='https://flkstaffordshire.clubspeedtiming.com/cs-registration/' target='_blank').button.button__primary Register Now
-      iframe.race-history(src="https://flkstaffordshire.clubspeedtiming.com/mobile" title="Race history and driver lap times" width="100%" height="600" frameborder="0" allowfullscreen="allowfullscreen")
+      .media-embed(data-embed-src='https://flkstaffordshire.clubspeedtiming.com/mobile' data-embed-title='Race history and driver lap times')
+        .media-embed__stage
+          .media-embed__placeholder
+            p Search race history and driver lap times.
+            button.media-embed__load(type='button' hidden) Load race history
+        a.media-embed__direct(href='https://flkstaffordshire.clubspeedtiming.com/mobile' target='_blank' rel='noopener noreferrer') Open race history in a new tab

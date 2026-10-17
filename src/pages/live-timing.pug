@@ -12,5 +12,11 @@ block description
 block content
   section.black
     .container
-      h1.visually-hidden Live Race Timing
-      iframe(src="https://flkstaffordshire.clubspeedtiming.com/cs-speedscreen/#/3" title="Live lap timing at Fast Lane Karting" width="100%" height="768" frameborder="0" allowfullscreen="allowfullscreen")
+      h1.center Live Race Timing
+      .red-highlight.centered
+      .media-embed.media-embed--timing(data-embed-src='https://flkstaffordshire.clubspeedtiming.com/cs-speedscreen/#/3' data-embed-title='Live lap timing at Fast Lane Karting')
+        .media-embed__stage
+          .media-embed__placeholder
+            p View live lap times from the track.
+            button.media-embed__load(type='button' hidden) Load live timing
+        a.media-embed__direct(href='https://flkstaffordshire.clubspeedtiming.com/cs-speedscreen/#/3' target='_blank' rel='noopener noreferrer') Open live timing in a new tab

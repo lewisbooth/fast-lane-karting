@@ -181,7 +181,7 @@ nav, .nav
         background midGrey
 
       a
-        font-family 'BigNoodleTitling'
+        font-family displayFont
         font-size 2.2rem
         letter-spacing 0.1rem
         white-space nowrap
@@ -216,12 +216,15 @@ nav, .nav
         padding .75rem .75rem
           
 
-@media(max-width: breakpointSmall)
+@media(max-width: 1279px)
 
   body
     margin-top 10rem !important
 
   .nav
+
+    .container
+      padding 0 1.5rem
 
     &__primary 
       z-index 2
@@ -285,6 +288,8 @@ nav, .nav
       transition transform .3s
       will-change transform
       visibility hidden
+      max-height calc(100dvh - 10rem)
+      overflow-y auto
 
       & li a
         width 100vw

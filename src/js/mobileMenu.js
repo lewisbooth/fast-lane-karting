@@ -2,7 +2,7 @@ import { $ } from './dollarSelect.js'
 
 const nav = $('.nav__menu')
 const navMenuToggle = $('.nav__menu-toggle')
-const mobile = window.matchMedia('(max-width: 767px)')
+const mobile = window.matchMedia('(max-width: 1279px)')
 let active = false
 
 function updateMenu() {
